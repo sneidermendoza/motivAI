@@ -1,0 +1,11 @@
+from django.db import models
+from .plan import PlanEntrenamiento
+
+class Routine(models.Model):
+    plan = models.ForeignKey(PlanEntrenamiento, on_delete=models.CASCADE, related_name='rutinas')
+    dia = models.PositiveIntegerField()  # Día dentro del plan
+    tipo = models.CharField(max_length=20, choices=[('entrenamiento', 'Entrenamiento'), ('descanso', 'Descanso')])
+    observaciones = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Rutina día {self.dia} ({self.tipo}) - Plan {self.plan.id}" 

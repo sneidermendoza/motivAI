@@ -31,4 +31,5 @@ Thumbs.db
 *.bak
 *.swp
 .idea/
-.vscode/ 
+.vscode/
+.env 
