@@ -33,6 +33,23 @@ motivAI/
 └── frontend/
 ```
 
+## Login Social (Google y Facebook)
+Para iniciar sesión con Google o Facebook desde el frontend, redirige al usuario a las siguientes URLs:
+
+- **Login con Google:**
+  ```
+  http://localhost:8000/auth/login/google-oauth2/
+  ```
+- **Login con Facebook:**
+  ```
+  http://localhost:8000/auth/login/facebook/
+  ```
+
+> **Descripción:**
+> Estas URLs inician el flujo de autenticación social. El usuario será redirigido a Google o Facebook para autorizar el acceso y, tras aceptar, volverá a la app con la sesión iniciada. El backend maneja la creación y autenticación del usuario automáticamente.
+
+Si tienes ambientes de producción, recuerda actualizar las URLs según el dominio correspondiente.
+
 ## Plan de Trabajo
 El plan de trabajo y las prioridades del proyecto están documentados en:
 - [`docs/plan_trabajo.md`](docs/plan_trabajo.md) (checklist editable y seguimiento)
