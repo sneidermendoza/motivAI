@@ -17,5 +17,11 @@ class User(AbstractUser):
     autenticacion_social = models.CharField(max_length=50, null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True)
 
+    TIPO_USUARIO_CHOICES = (
+        ('admin', 'Administrador'),
+        ('usuario', 'Usuario'),
+    )
+    tipo_usuario = models.CharField(max_length=20, choices=TIPO_USUARIO_CHOICES, default='usuario')
+
     def __str__(self):
         return self.username 

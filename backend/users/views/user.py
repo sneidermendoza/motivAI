@@ -1,9 +1,12 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from drf_yasg.utils import swagger_auto_schema
 from backend.utils import ResponseStandard, StandardResponseMixin
 from django.contrib.auth import get_user_model
-from ..serializers.user import UserSerializer
+from ..serializers.user import UserSerializer, RegisterSerializer
 
 User = get_user_model()
 
@@ -13,7 +16,35 @@ class UserViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
+    def update(self, request, *args, **kwargs):
+        # Protección extra: solo admin puede cambiar tipo_usuario
+        if 'tipo_usuario' in request.data and not request.user.is_superuser:
+            return ResponseStandard.error(
+                message="Solo un administrador puede cambiar el tipo de usuario.",
+                status=403
+            )
+        return super().update(request, *args, **kwargs)
+
     @action(detail=False, methods=['get'])
     def me(self, request):
         serializer = self.get_serializer(request.user)
-        return ResponseStandard.success(data=serializer.data, message="Perfil obtenido correctamente") 
+        return ResponseStandard.success(data=serializer.data, message="Perfil obtenido correctamente")
+
+class RegisterView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    @swagger_auto_schema(request_body=RegisterSerializer)
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return ResponseStandard.success(
+                data=UserSerializer(user).data,
+                message="Usuario registrado correctamente",
+                status=status.HTTP_201_CREATED
+            )
+        return ResponseStandard.error(
+            message="Error en el registro",
+            data=serializer.errors,
+            status=400
+        )
