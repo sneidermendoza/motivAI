@@ -1,0 +1,235 @@
+[
+    {
+        "model": "conversation.conversationstate",
+        "pk": 1,
+        "fields": {
+            "name": "initial",
+            "description": "Estado inicial de la conversación",
+            "next_states": ["motivation", "personal_info"],
+            "required_data": [],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 2,
+        "fields": {
+            "name": "motivation",
+            "description": "Preguntando sobre la motivación del usuario",
+            "next_states": ["personal_info"],
+            "required_data": ["motivation"],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 3,
+        "fields": {
+            "name": "personal_info",
+            "description": "Recopilando información personal",
+            "next_states": ["health_info"],
+            "required_data": ["age", "weight", "height"],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 4,
+        "fields": {
+            "name": "health_info",
+            "description": "Recopilando información de salud",
+            "next_states": ["exercise_history"],
+            "required_data": ["medical_conditions", "injuries"],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 5,
+        "fields": {
+            "name": "exercise_history",
+            "description": "Preguntando sobre historial de ejercicio",
+            "next_states": ["goals"],
+            "required_data": ["exercise_frequency", "experience_level"],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 6,
+        "fields": {
+            "name": "goals",
+            "description": "Definiendo objetivos específicos",
+            "next_states": ["final"],
+            "required_data": ["specific_goals", "timeline"],
+            "is_final": false
+        }
+    },
+    {
+        "model": "conversation.conversationstate",
+        "pk": 7,
+        "fields": {
+            "name": "final",
+            "description": "Estado final de la conversación",
+            "next_states": [],
+            "required_data": [],
+            "is_final": true
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 1,
+        "fields": {
+            "text": "¿Qué te motiva a mejorar tu salud y condición física?",
+            "type": "open",
+            "options": null,
+            "validation_rules": null,
+            "is_active": true,
+            "order": 1,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 2,
+        "fields": {
+            "text": "¿Cuál es tu edad?",
+            "type": "numeric",
+            "options": null,
+            "validation_rules": {
+                "min": 15,
+                "max": 100
+            },
+            "is_active": true,
+            "order": 2,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 3,
+        "fields": {
+            "text": "¿Cuál es tu peso actual en kilogramos?",
+            "type": "numeric",
+            "options": null,
+            "validation_rules": {
+                "min": 30,
+                "max": 300
+            },
+            "is_active": true,
+            "order": 3,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 4,
+        "fields": {
+            "text": "¿Cuál es tu estatura en centímetros?",
+            "type": "numeric",
+            "options": null,
+            "validation_rules": {
+                "min": 100,
+                "max": 250
+            },
+            "is_active": true,
+            "order": 4,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 5,
+        "fields": {
+            "text": "¿Tienes alguna condición médica que deba tener en cuenta?",
+            "type": "open",
+            "options": null,
+            "validation_rules": null,
+            "is_active": true,
+            "order": 5,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 6,
+        "fields": {
+            "text": "¿Con qué frecuencia haces ejercicio actualmente?",
+            "type": "multiple_choice",
+            "options": [
+                "Nunca",
+                "1-2 veces por semana",
+                "3-4 veces por semana",
+                "5 o más veces por semana"
+            ],
+            "validation_rules": null,
+            "is_active": true,
+            "order": 6,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 7,
+        "fields": {
+            "text": "¿Cuál es tu nivel de experiencia con el ejercicio?",
+            "type": "multiple_choice",
+            "options": [
+                "Principiante",
+                "Intermedio",
+                "Avanzado"
+            ],
+            "validation_rules": null,
+            "is_active": true,
+            "order": 7,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 8,
+        "fields": {
+            "text": "¿Cuáles son tus objetivos específicos? (puedes elegir varios)",
+            "type": "multiple_choice",
+            "options": [
+                "Perder peso",
+                "Ganar músculo",
+                "Mejorar resistencia",
+                "Mejorar flexibilidad",
+                "Mejorar salud general",
+                "Preparar para competencia"
+            ],
+            "validation_rules": null,
+            "is_active": true,
+            "order": 8,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    },
+    {
+        "model": "conversation.question",
+        "pk": 9,
+        "fields": {
+            "text": "¿En qué tiempo te gustaría alcanzar tus objetivos?",
+            "type": "multiple_choice",
+            "options": [
+                "1-3 meses",
+                "3-6 meses",
+                "6-12 meses",
+                "Más de 1 año"
+            ],
+            "validation_rules": null,
+            "is_active": true,
+            "order": 9,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    }
+] 

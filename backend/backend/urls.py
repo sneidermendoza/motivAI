@@ -42,6 +42,7 @@ urlpatterns = [
     path('api/progress/', include('progress.urls')),
     path('api/notifications/', include('notifications.urls')),
     path('api/feedback/', include('feedback.urls')),
+    path('api/conversation/', include('conversation.urls')),
     # Swagger/OpenAPI
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui-root'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

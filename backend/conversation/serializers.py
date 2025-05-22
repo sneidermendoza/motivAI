@@ -1,0 +1,59 @@
+from rest_framework import serializers
+from .models import Conversation, Question, Response, ConversationState
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ['id', 'text', 'type', 'options', 'validation_rules', 'order']
+        read_only_fields = ['id']
+
+class ResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Response
+        fields = ['id', 'conversation', 'question', 'raw_text', 'extracted_data', 
+                 'is_valid', 'validation_message', 'created_at']
+        read_only_fields = ['id', 'extracted_data', 'is_valid', 'validation_message', 'created_at']
+
+class ConversationStateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConversationState
+        fields = ['id', 'name', 'description', 'next_states', 'required_data', 'is_final']
+        read_only_fields = ['id']
+
+class ConversationSerializer(serializers.ModelSerializer):
+    responses = ResponseSerializer(many=True, read_only=True)
+    current_state_info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Conversation
+        fields = ['id', 'user', 'created_at', 'updated_at', 'is_active', 
+                 'context', 'current_state', 'responses', 'current_state_info']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'responses', 'current_state_info']
+
+    def get_current_state_info(self, obj):
+        try:
+            state = ConversationState.objects.get(name=obj.current_state)
+            return ConversationStateSerializer(state).data
+        except ConversationState.DoesNotExist:
+            return None
+
+class ConversationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Conversation
+        fields = ['user', 'context']
+
+class UserResponseSerializer(serializers.Serializer):
+    """Serializer para procesar la respuesta del usuario."""
+    conversation_id = serializers.IntegerField()
+    raw_text = serializers.CharField()
+    question_id = serializers.IntegerField(required=False)
+
+    def validate(self, data):
+        try:
+            conversation = Conversation.objects.get(id=data['conversation_id'])
+            if not conversation.is_active:
+                raise serializers.ValidationError("Esta conversación ya no está activa.")
+            data['conversation'] = conversation
+            return data
+        except Conversation.DoesNotExist:
+            raise serializers.ValidationError("Conversación no encontrada.") 

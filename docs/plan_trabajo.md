@@ -18,18 +18,24 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Autenticación email/contraseña
 - [x] Autenticación social (Google/Facebook)
 - [x] Endpoints CRUD de usuario
-- [ ] Gestión de foto de perfil
-- [ ] Panel admin para preguntas editables
+- [x] Gestión de foto de perfil
 - [ ] Endpoint para cambiar contraseña y recuperación de cuenta
 - [ ] Endpoint para eliminar cuenta (GDPR)
 - [ ] Validación y sanitización de archivos subidos (fotos)
 - [ ] Limitar tamaño y tipo de archivos permitidos
 - [ ] Políticas de privacidad y manejo de datos personales
 
-### Preguntas y Respuestas
-- [ ] Modelo de preguntas predefinidas (editable por admin)
+### Sistema Conversacional
+- [ ] Modelo de conversación (estado, contexto, historial)
+- [ ] Modelo de preguntas (tipo: abierta, opción múltiple, numérica)
 - [ ] Modelo de respuestas de usuario
-- [ ] CRUD de preguntas desde admin
+- [ ] Endpoint de conversación (/api/conversation/)
+- [ ] Sistema de extracción de información de respuestas abiertas
+- [ ] Sistema de validación y aclaración de respuestas
+- [ ] Panel admin para configurar flujo de conversación
+- [ ] Sistema de guardado de contexto de conversación
+- [ ] Endpoint para reiniciar conversación
+- [ ] Sistema de fallback para respuestas no entendidas
 
 ### Planes y Rutinas
 - [ ] Modelo de plan de entrenamiento (un plan activo por usuario)
@@ -60,7 +66,9 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 ## 3. Frontend
 - [ ] Estructura base Next.js + Tailwind
 - [ ] Registro/Login de usuario
-- [ ] Formulario dinámico de preguntas (IA)
+- [ ] Interfaz conversacional (chat-like)
+- [ ] Componente de chat con IA
+- [ ] Visualización de progreso de conversación
 - [ ] Visualización y seguimiento de plan/rutina
 - [ ] Registro de progreso y subida de fotos
 - [ ] Notificaciones push en PWA
@@ -70,13 +78,18 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 ## 4. Integración IA
 - [ ] Integrar modelo open source local (GPT4All, Llama.cpp, etc.)
-- [ ] Endpoint para interacción con IA (preguntas, generación de plan, motivación)
+- [ ] Sistema de procesamiento de lenguaje natural
+- [ ] Sistema de extracción de información de respuestas
+- [ ] Sistema de generación de preguntas contextuales
+- [ ] Sistema de validación de respuestas
 - [ ] Documentar prompts y lógica de interacción
+- [ ] Sistema de fallback para respuestas no entendidas
 
 ## 5. Documentación y Organización
 - [ ] Mantener actualizado el backlog (`backlog/motivAI-backlog.csv`)
 - [ ] Actualizar README y docs/arquitectura.md
-- [ ] Agregar diagrama de flujo y modelo de datos
+- [ ] Agregar diagrama de flujo conversacional
+- [ ] Agregar diagrama de modelo de datos
 - [ ] Documentar endpoints principales y ejemplos de uso
 - [ ] Crear guía de contribución
 - [ ] Separar settings de producción y desarrollo

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'progress',
     'notifications',
     'feedback',
+    'conversation',
     'drf_yasg',
 ]
 
