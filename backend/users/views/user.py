@@ -7,6 +7,7 @@ from drf_yasg.utils import swagger_auto_schema
 from backend.utils import ResponseStandard, StandardResponseMixin
 from django.contrib.auth import get_user_model
 from ..serializers.user import UserSerializer, RegisterSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 User = get_user_model()
 
@@ -48,3 +49,17 @@ class RegisterView(APIView):
             data=serializer.errors,
             status=400
         )
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        refresh_token = request.data.get('refresh')
+        if not refresh_token:
+            return ResponseStandard.error(message="No se proporcionó refresh token.", status=400)
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return ResponseStandard.success(message="Sesión cerrada correctamente.")
+        except TokenError:
+            return ResponseStandard.error(message="Token inválido o ya fue deshabilitado.", status=400)

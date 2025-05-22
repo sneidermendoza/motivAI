@@ -12,6 +12,26 @@
   **Campos:** `username`, `password`  
   **Nota:** El token solo incluye el `username` y claims estándar, **no** roles ni permisos.
 
+- **Logout:**  
+  `POST /api/users/logout/`  
+  Invalida el refresh token JWT (blacklist).  
+  **Campos:** `refresh` (string, obligatorio, el refresh token JWT a invalidar)  
+  **Ejemplo de request:**
+  ```json
+  {
+    "refresh": "<refresh_token>"
+  }
+  ```
+  **Respuesta exitosa:**
+  ```json
+  {
+    "success": true,
+    "message": "Sesión cerrada correctamente.",
+    "data": null
+  }
+  ```
+  Si el token ya fue invalidado o es incorrecto, devuelve un error 400.
+
 - **Perfil de usuario:**  
   `GET /api/users/me/`  
   Devuelve los datos básicos del usuario autenticado, incluyendo el campo `roles` que muestra el nombre del rol asignado al usuario.  
