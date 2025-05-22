@@ -38,9 +38,11 @@ class ConversationSerializer(serializers.ModelSerializer):
             return None
 
 class ConversationCreateSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     class Meta:
         model = Conversation
-        fields = ['user', 'context']
+        fields = ['id', 'user', 'context', 'current_state']
+        read_only_fields = ['id', 'user']
 
 class UserResponseSerializer(serializers.Serializer):
     """Serializer para procesar la respuesta del usuario."""

@@ -7,7 +7,7 @@
   **Campos:** `username`, `email`, `password`, `password2`
 
 - **Login:**  
-  `POST /api/users/login/`  
+  `POST /api/token/`  
   Devuelve un token JWT.  
   **Campos:** `username`, `password`  
   **Nota:** El token solo incluye el `username` y claims estándar, **no** roles ni permisos.
@@ -33,7 +33,7 @@
   Si el token ya fue invalidado o es incorrecto, devuelve un error 400.
 
 - **Perfil de usuario:**  
-  `GET /api/users/me/`  
+  `GET /api/users/profile/me/`  
   Devuelve los datos básicos del usuario autenticado, incluyendo el campo `roles` que muestra el nombre del rol asignado al usuario.  
   Ejemplo de respuesta:
   ```json
@@ -82,32 +82,56 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
   - Admins pueden ver y modificar todo.
 - **El perfil de usuario incluye el campo `roles` para facilitar la construcción de menús dinámicos.**
 
-## 5. Plan de trabajo actualizado
+## 5. Testing automatizado y buenas prácticas
+
+### Ejecución de tests
+- Para correr **todos los tests** del backend y validar el flujo MVP:
+  ```bash
+  python manage.py test
+  ```
+- Los tests cubren:
+  - Registro, login, perfil, logout
+  - Creación de plan y perfil fitness
+  - Conversación y respuestas
+  - Permisos y errores comunes
+
+### Buenas prácticas para desarrolladores
+- **Siempre agregar tests** para nuevos endpoints o cambios en lógica crítica.
+- **Si agregas un modelo con campos ForeignKey que se asignan automáticamente en la vista (ej: user, usuario), márcalos como `read_only=True` en el serializer.**
+- **No expongas campos sensibles ni permisos en el token JWT.**
+- **Usa `ResponseStandard` para respuestas claras y estructuradas.**
+- **Documenta endpoints y ejemplos en Swagger y en este README.**
+- **Antes de hacer merge o deploy, corre siempre los tests.**
+
+## 6. Plan de trabajo actualizado
 
 ### Completado
 - [x] Modelos de usuario, roles, permisos, perfil fitness, planes, rutinas, ejercicios, preguntas y respuestas.
 - [x] Seeds/fixtures de roles y permisos.
-- [x] Endpoints de autenticación, registro, login, perfil.
+- [x] Endpoints de autenticación, registro, login, perfil, logout.
 - [x] Endpoints de consulta de roles y permisos (solo lectura).
 - [x] Extracción de datos fitness desde la conversación.
 - [x] Documentación Swagger y ejemplos de request/response.
 - [x] Seguridad: solo datos propios, sin exponer permisos en perfil ni token.
 - [x] Inclusión del campo `roles` en el perfil de usuario.
+- [x] Pruebas automatizadas de todo el flujo MVP.
+- [x] Robustez y estandarización de respuestas API.
 
 ### Pendiente / Próximos pasos
-- [ ] Endpoint específico para menús dinámicos (si el frontend lo requiere).
 - [ ] Mejorar la gestión de estados conversacionales y lógica de transición.
 - [ ] Integración y pruebas con frontend Next.js y app móvil.
 - [ ] Documentar casos de uso avanzados (admin, gestión masiva, etc).
 - [ ] Mejorar la gestión de fixtures y seeds para ambientes de staging/producción.
-- [ ] Pruebas automatizadas de permisos y flujos críticos.
+- [ ] Pruebas automatizadas de permisos y flujos críticos adicionales.
+- [ ] Endpoint específico para menús dinámicos (si el frontend lo requiere).
 
 ## ¿Qué sigue?
-1. **Integración con frontend:**  
-   El frontend puede consumir `/api/users/me/` para datos básicos y `/api/users/roles/` o `/api/users/permissions/` si necesita construir menús o mostrar capacidades del usuario.
+1. **Mejorar la gestión de estados conversacionales:**
+   - Implementar o refinar la lógica de transición de estados en la conversación (por ejemplo, pasar de "inicial" a "preguntando", "finalizado", etc).
+   - Esto hará que el flujo conversacional sea más natural y controlado.
 
-2. **Menús dinámicos:**  
-   Si en el futuro se requiere, se puede crear un endpoint que devuelva solo los permisos/códigos relevantes para el usuario autenticado, optimizado para frontend.
+2. **Integración con frontend:**
+   - Coordinar con el equipo frontend para que consuman los endpoints y reporten cualquier ajuste necesario.
 
-3. **Pruebas y feedback:**  
-   Probar el flujo completo en Swagger/Postman y ajustar según feedback de frontend/móvil. 
+3. **Pruebas y feedback:**
+   - Probar el flujo completo en Swagger/Postman y ajustar según feedback de frontend/móvil. 
