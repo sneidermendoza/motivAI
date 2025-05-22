@@ -105,10 +105,10 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [ ] Logs y monitoreo básico  # Mantenimiento
 
 ## 11. Permisos y Roles (nuevo)
-- [ ] Implementar sistema de permisos extendido y roles personalizados (admin, usuario, empleado, coach, etc.)
-- [ ] Documentar lógica de permisos y ejemplos de uso
-- [ ] Proteger endpoints sensibles según rol
-- [ ] Agregar tests de permisos y acceso
+- [x] Implementar sistema de permisos extendido y roles personalizados (admin, usuario, empleado, coach, etc.)
+- [x] Documentar lógica de permisos y ejemplos de uso
+- [x] Proteger endpoints sensibles según rol
+- [x] Agregar tests de permisos y acceso
 
 ## 12. Mejoras Futuras (no MVP)
 - [ ] Gamificación (logros, medallas)

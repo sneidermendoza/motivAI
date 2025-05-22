@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 import re
+from users.models.role import UserRole
+from users.serializers.role import RoleSerializer
 
 User = get_user_model()
 
@@ -45,15 +47,20 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     foto_perfil = serializers.ImageField(required=False, allow_null=True)
+    roles = serializers.SerializerMethodField()
 
     class Meta:
         model = User
         fields = (
             'id', 'username', 'email', 'first_name', 'last_name',
-            'foto_perfil', 'tipo_usuario',
+            'foto_perfil', 'tipo_usuario', 'roles',
             'status', 'autenticacion_social', 'fecha_registro'
         )
         read_only_fields = ('id', 'fecha_registro', 'tipo_usuario', 'status')
+
+    def get_roles(self, obj):
+        user_roles = UserRole.objects.filter(user=obj)
+        return [user_role.role.name for user_role in user_roles]
 
     def create(self, validated_data):
         # Siempre asigna tipo_usuario='usuario' al crear
