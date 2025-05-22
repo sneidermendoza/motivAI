@@ -13,7 +13,7 @@ from .serializers import (
     UserResponseSerializer
 )
 from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
-from .utils import extract_and_update_fitness_profile
+from .utils import extract_and_update_fitness_profile, transition_conversation_state
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from backend.utils import ResponseStandard
@@ -61,6 +61,8 @@ class ConversationViewSet(viewsets.ModelViewSet):
         response.extracted_data = {'raw_text': response.raw_text}
         response.save()
         conversation.save()
+        # Llamar al helper de transición de estado
+        transition_conversation_state(conversation, conversation.current_state, conversation.context)
         return ResponseStandard.success(
             data=ConversationSerializer(conversation).data,
             message="Respuesta registrada y perfil actualizado.",

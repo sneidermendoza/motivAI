@@ -126,7 +126,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 **¡Actualiza este archivo con cada avance!**
 
-![MVP Progress](https://img.shields.io/badge/MVP%20Progress-50%25-yellow) 
+![MVP Progress](https://img.shields.io/badge/MVP%20Progress-60%25-yellow) 
 
 **Notas del MVP:**
 1. El sistema conversacional es el core del MVP

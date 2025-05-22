@@ -1,4 +1,5 @@
 from plans.models.plan import UserFitnessProfile
+from conversation.models import ConversationState
 
 def extract_and_update_fitness_profile(usuario, plan, response):
     """
@@ -46,4 +47,42 @@ def extract_and_update_fitness_profile(usuario, plan, response):
         otros[q_text] = text
         profile.otros = otros
 
-    profile.save() 
+    profile.save()
+
+def transition_conversation_state(conversation, current_state, context):
+    """
+    Determina el siguiente estado de la conversación basado en el estado actual y el contexto.
+    Si el estado actual es final, marca la conversación como inactiva.
+    """
+    try:
+        state = ConversationState.objects.get(name=current_state)
+    except ConversationState.DoesNotExist:
+        return
+
+    # Si el estado es final, marcar la conversación como inactiva
+    if state.is_final:
+        conversation.is_active = False
+        conversation.save()
+        return
+
+    # Verificar si se han recolectado los datos requeridos
+    required_data = state.required_data
+    collected_data = context.get('collected_data', {})
+    missing_data = [field for field in required_data if field not in collected_data]
+
+    # Si faltan datos, se puede decidir si avanzar o quedarse en el mismo estado
+    # En este caso, avanzamos si hay al menos un dato recolectado
+    if missing_data and len(collected_data) > 0:
+        # Avanzar al siguiente estado si hay datos recolectados
+        next_states = state.next_states
+        if next_states:
+            next_state = next_states[0]  # Tomar el primer estado siguiente
+            conversation.current_state = next_state
+            conversation.save()
+    elif not missing_data:
+        # Si no faltan datos, avanzar al siguiente estado
+        next_states = state.next_states
+        if next_states:
+            next_state = next_states[0]  # Tomar el primer estado siguiente
+            conversation.current_state = next_state
+            conversation.save() 

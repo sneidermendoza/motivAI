@@ -116,9 +116,9 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 - [x] Inclusión del campo `roles` en el perfil de usuario.
 - [x] Pruebas automatizadas de todo el flujo MVP.
 - [x] Robustez y estandarización de respuestas API.
+- [x] Mejorar la gestión de estados conversacionales y lógica de transición.
 
 ### Pendiente / Próximos pasos
-- [ ] Mejorar la gestión de estados conversacionales y lógica de transición.
 - [ ] Integración y pruebas con frontend Next.js y app móvil.
 - [ ] Documentar casos de uso avanzados (admin, gestión masiva, etc).
 - [ ] Mejorar la gestión de fixtures y seeds para ambientes de staging/producción.
@@ -126,12 +126,8 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 - [ ] Endpoint específico para menús dinámicos (si el frontend lo requiere).
 
 ## ¿Qué sigue?
-1. **Mejorar la gestión de estados conversacionales:**
-   - Implementar o refinar la lógica de transición de estados en la conversación (por ejemplo, pasar de "inicial" a "preguntando", "finalizado", etc).
-   - Esto hará que el flujo conversacional sea más natural y controlado.
-
-2. **Integración con frontend:**
+1. **Integración con frontend:**
    - Coordinar con el equipo frontend para que consuman los endpoints y reporten cualquier ajuste necesario.
 
-3. **Pruebas y feedback:**
+2. **Pruebas y feedback:**
    - Probar el flujo completo en Swagger/Postman y ajustar según feedback de frontend/móvil. 
