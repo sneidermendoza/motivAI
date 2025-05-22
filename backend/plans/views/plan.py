@@ -4,6 +4,7 @@ from plans.models.plan import PlanEntrenamiento, UserFitnessProfile
 from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer
 from conversation.models import Conversation
 from conversation.serializers import ConversationSerializer
+from backend.utils import ResponseStandard, StandardResponseMixin
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -18,7 +19,8 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         plan = serializer.save(usuario=request.user)
         # Crea una conversación asociada automáticamente
         conversation = Conversation.objects.create(
@@ -28,13 +30,17 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
         )
         conversation_data = ConversationSerializer(conversation).data
         plan_data = PlanEntrenamientoSerializer(plan).data
-        return Response({"plan": plan_data, "conversation": conversation_data}, status=status.HTTP_201_CREATED)
+        return ResponseStandard.success(
+            data={"plan": plan_data, "conversation": conversation_data},
+            message="Plan y conversación creados correctamente.",
+            status=status.HTTP_201_CREATED
+        )
 
     def perform_create(self, serializer):
         # Ya no se usa, la lógica está en create
         pass
 
-class UserFitnessProfileViewSet(viewsets.ModelViewSet):
+class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     queryset = UserFitnessProfile.objects.all()
     serializer_class = UserFitnessProfileSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]

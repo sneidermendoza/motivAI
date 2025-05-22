@@ -16,6 +16,7 @@ from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
 from .utils import extract_and_update_fitness_profile
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from backend.utils import ResponseStandard
 
 class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -26,10 +27,12 @@ class ConversationViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = ConversationCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         conversation = serializer.save(user=request.user)
-        return Response(
-            ConversationSerializer(conversation).data,
+        return ResponseStandard.success(
+            data=ConversationSerializer(conversation).data,
+            message="Conversación creada correctamente.",
             status=status.HTTP_201_CREATED
         )
 
@@ -43,31 +46,24 @@ class ConversationViewSet(viewsets.ModelViewSet):
     def respond(self, request, pk=None):
         conversation = self.get_object()
         serializer = UserResponseSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
+        if not serializer.is_valid():
+            return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         # Crear la respuesta
         response = UserResponse.objects.create(
             conversation=conversation,
             raw_text=serializer.validated_data['raw_text'],
             question_id=serializer.validated_data.get('question_id')
         )
-
         # Procesar la respuesta y actualizar el perfil fitness
-        # Buscar el plan activo del usuario
         plan = PlanEntrenamiento.objects.filter(usuario=request.user, status='activo').order_by('-fecha_inicio').first()
         if plan:
             extract_and_update_fitness_profile(request.user, plan, response)
-
-        # Guardar datos extraídos en la respuesta (opcional)
         response.extracted_data = {'raw_text': response.raw_text}
         response.save()
-
-        # Actualizar el estado de la conversación
-        # TODO: Implementar lógica de transición de estados
         conversation.save()
-
-        return Response(
-            ConversationSerializer(conversation).data,
+        return ResponseStandard.success(
+            data=ConversationSerializer(conversation).data,
+            message="Respuesta registrada y perfil actualizado.",
             status=status.HTTP_200_OK
         )
 
@@ -77,8 +73,9 @@ class ConversationViewSet(viewsets.ModelViewSet):
         conversation.current_state = 'initial'
         conversation.context = {}
         conversation.save()
-        return Response(
-            ConversationSerializer(conversation).data,
+        return ResponseStandard.success(
+            data=ConversationSerializer(conversation).data,
+            message="Conversación reiniciada.",
             status=status.HTTP_200_OK
         )
 
