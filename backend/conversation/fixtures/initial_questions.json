@@ -1,0 +1,105 @@
+[
+  {
+    "model": "conversation.question",
+    "pk": 1,
+    "fields": {
+      "text": "¿Cuál es tu principal motivación para mejorar tu salud o forma física?",
+      "type": "open",
+      "order": 1,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 2,
+    "fields": {
+      "text": "¿Cuál es tu objetivo principal? (Ejemplo: bajar de peso, ganar músculo, mejorar resistencia, etc.)",
+      "type": "open",
+      "order": 2,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 3,
+    "fields": {
+      "text": "¿Cuál es tu edad?",
+      "type": "numeric",
+      "order": 3,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 4,
+    "fields": {
+      "text": "¿Cuál es tu sexo?",
+      "type": "multiple_choice",
+      "options": ["Masculino", "Femenino", "Otro", "Prefiero no decirlo"],
+      "order": 4,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 5,
+    "fields": {
+      "text": "¿Cuál es tu peso actual (kg)?",
+      "type": "numeric",
+      "order": 5,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 6,
+    "fields": {
+      "text": "¿Cuál es tu altura (cm)?",
+      "type": "numeric",
+      "order": 6,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 7,
+    "fields": {
+      "text": "¿Cómo describirías tu nivel de actividad física actual?",
+      "type": "multiple_choice",
+      "options": ["Sedentario", "Ligero", "Moderado", "Activo", "Muy activo"],
+      "order": 7,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 8,
+    "fields": {
+      "text": "¿Tienes alguna restricción médica, lesión o condición especial que debamos considerar?",
+      "type": "open",
+      "order": 8,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 9,
+    "fields": {
+      "text": "¿Cuántos días a la semana te gustaría entrenar?",
+      "type": "numeric",
+      "order": 9,
+      "is_active": true
+    }
+  },
+  {
+    "model": "conversation.question",
+    "pk": 10,
+    "fields": {
+      "text": "¿Prefieres entrenar en casa, en gimnasio o al aire libre?",
+      "type": "multiple_choice",
+      "options": ["Casa", "Gimnasio", "Aire libre", "Indistinto"],
+      "order": 10,
+      "is_active": true
+    }
+  }
+] 

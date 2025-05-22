@@ -44,9 +44,15 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
 
 class UserResponseSerializer(serializers.Serializer):
     """Serializer para procesar la respuesta del usuario."""
-    conversation_id = serializers.IntegerField()
-    raw_text = serializers.CharField()
-    question_id = serializers.IntegerField(required=False)
+    conversation_id = serializers.IntegerField(
+        help_text="ID de la conversación a la que pertenece la respuesta.", required=True
+    )
+    raw_text = serializers.CharField(
+        help_text="Texto de la respuesta del usuario.", required=True
+    )
+    question_id = serializers.IntegerField(
+        help_text="ID de la pregunta que se está respondiendo.", required=True
+    )
 
     def validate(self, data):
         try:

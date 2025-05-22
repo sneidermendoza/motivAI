@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
-from .models import Conversation, Question, Response, ConversationState
+from .models import Conversation, Question, Response as UserResponse, ConversationState
 from .serializers import (
     ConversationSerializer,
     ConversationCreateSerializer,
@@ -12,6 +12,10 @@ from .serializers import (
     ConversationStateSerializer,
     UserResponseSerializer
 )
+from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
+from .utils import extract_and_update_fitness_profile
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -29,6 +33,12 @@ class ConversationViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED
         )
 
+    @swagger_auto_schema(
+        method='post',
+        request_body=UserResponseSerializer,
+        responses={200: ConversationSerializer},
+        operation_description="Responde una pregunta en la conversación. Campos requeridos: conversation_id (int), question_id (int), raw_text (str)."
+    )
     @action(detail=True, methods=['post'])
     def respond(self, request, pk=None):
         conversation = self.get_object()
@@ -36,14 +46,19 @@ class ConversationViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         # Crear la respuesta
-        response = Response.objects.create(
+        response = UserResponse.objects.create(
             conversation=conversation,
             raw_text=serializer.validated_data['raw_text'],
             question_id=serializer.validated_data.get('question_id')
         )
 
-        # TODO: Procesar la respuesta con IA
-        # Por ahora, solo guardamos la respuesta sin procesar
+        # Procesar la respuesta y actualizar el perfil fitness
+        # Buscar el plan activo del usuario
+        plan = PlanEntrenamiento.objects.filter(usuario=request.user, status='activo').order_by('-fecha_inicio').first()
+        if plan:
+            extract_and_update_fitness_profile(request.user, plan, response)
+
+        # Guardar datos extraídos en la respuesta (opcional)
         response.extracted_data = {'raw_text': response.raw_text}
         response.save()
 

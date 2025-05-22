@@ -31,13 +31,21 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Endpoint de conversación (/api/conversation/)  # API para frontend
 - [x] Sistema de guardado de contexto de conversación  # Persistencia de la conversación
 - [x] Endpoint para reiniciar conversación  # UX: empezar de cero
+- [x] Seed/fixture de preguntas iniciales  # Preguntas humanas y relevantes cargadas
+- [x] Documentación y ejemplos claros en Swagger y Markdown  # Facilita integración
+- [x] Endpoint de responder pregunta bien documentado y funcional
+- [x] Flujo conversacional automático al crear plan (conversación ligada a plan)
 - [ ] Sistema de extracción de información de respuestas abiertas  # Necesario para que la IA entienda al usuario (SIGUIENTE)
 - [ ] Sistema de validación y aclaración de respuestas  # Mejora la calidad de los datos para la IA
 - [ ] Sistema de fallback para respuestas no entendidas  # UX: manejo de errores conversacionales
 - [ ] Panel admin para configurar flujo de conversación  # Permite ajustar preguntas sin tocar código
 
 ## 4. Planes y Rutinas (Core MVP)
-- [ ] Modelo de plan de entrenamiento (un plan activo por usuario)  # Estructura para almacenar el plan generado (SIGUIENTE tras extracción de info)
+- [x] Modelo de plan de entrenamiento (un plan activo por usuario)  # Estructura para almacenar el plan generado
+- [x] Endpoint para crear plan y devolver conversación asociada
+- [x] Asociación automática de conversación al crear plan
+- [x] Modelo UserFitnessProfile para datos fitness ligados a plan
+- [x] Endpoint para consultar perfiles fitness (solo propios o todos si admin)
 - [ ] Endpoint para generación de plan por IA  # Aquí se integra la IA, usando la info extraída
 - [ ] Modelo de rutina diaria (cronograma)  # Desglose del plan en acciones diarias
 - [ ] Modelo de ejercicios en rutina (relación rutina-ejercicio)  # Detalle de cada rutina
@@ -89,14 +97,20 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Actualizar README y docs/arquitectura.md  # Documentación
 - [x] Agregar diagrama de flujo conversacional  # Visualización
 - [x] Agregar diagrama de modelo de datos  # Visualización
-- [ ] Documentar endpoints principales y ejemplos de uso  # Facilita integración
+- [x] Documentar endpoints principales y ejemplos de uso  # Facilita integración
 - [ ] Crear guía de contribución  # Comunidad
 - [ ] Separar settings de producción y desarrollo  # Buenas prácticas
 - [ ] Pruebas automáticas (unitarias y de integración)  # Calidad
 - [ ] CI/CD básico (GitHub Actions)  # Automatización
 - [ ] Logs y monitoreo básico  # Mantenimiento
 
-## 11. Mejoras Futuras (no MVP)
+## 11. Permisos y Roles (nuevo)
+- [ ] Implementar sistema de permisos extendido y roles personalizados (admin, usuario, empleado, coach, etc.)
+- [ ] Documentar lógica de permisos y ejemplos de uso
+- [ ] Proteger endpoints sensibles según rol
+- [ ] Agregar tests de permisos y acceso
+
+## 12. Mejoras Futuras (no MVP)
 - [ ] Gamificación (logros, medallas)
 - [ ] Integración con dispositivos externos (wearables, apps)
 - [ ] Planes de nutrición
@@ -112,7 +126,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 **¡Actualiza este archivo con cada avance!**
 
-![MVP Progress](https://img.shields.io/badge/MVP%20Progress-35%25-yellow) 
+![MVP Progress](https://img.shields.io/badge/MVP%20Progress-50%25-yellow) 
 
 **Notas del MVP:**
 1. El sistema conversacional es el core del MVP
