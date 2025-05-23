@@ -302,12 +302,32 @@
 ## Feedback y Notificaciones
 
 ### Enviar feedback
-- **POST** `/api/feedback/feedback/`
-- **Permiso:** Autenticado
+- **POST** `/api/feedback/feedback/` — Enviar feedback (anónimo o autenticado)
+- **GET** `/api/feedback/feedback/` — Listar feedbacks (solo admin)
 
-### Listar feedback (admin)
-- **GET** `/api/feedback/feedback/`
-- **Permiso:** Solo admin
+**Permisos:**
+- POST: cualquiera (anónimo o autenticado)
+- GET: solo admin
+
+**Ejemplo de request (POST):**
+```json
+{
+  "tipo": "sugerencia",
+  "mensaje": "Me gusta la app!"
+}
+```
+
+**Ejemplo de response (GET):**
+```json
+{
+  "id": 1,
+  "usuario": "testuser",
+  "fecha": "2024-06-10T12:00:00Z",
+  "tipo": "sugerencia",
+  "mensaje": "Me gusta la app!",
+  "status": "pendiente"
+}
+```
 
 ### Notificaciones (próximamente)
 - **GET** `/api/notifications/notification/`

@@ -1,0 +1,24 @@
+[
+  {
+    "model": "feedback.feedback",
+    "pk": 1,
+    "fields": {
+      "usuario": null,
+      "fecha": "2024-06-10T12:00:00Z",
+      "tipo": "sugerencia",
+      "mensaje": "¡Sería genial tener más rutinas de estiramiento!",
+      "status": "pendiente"
+    }
+  },
+  {
+    "model": "feedback.feedback",
+    "pk": 2,
+    "fields": {
+      "usuario": 1,
+      "fecha": "2024-06-10T13:00:00Z",
+      "tipo": "reporte",
+      "mensaje": "No puedo subir mi foto de progreso.",
+      "status": "pendiente"
+    }
+  }
+] 

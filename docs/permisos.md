@@ -56,4 +56,9 @@
 1. Todos los endpoints requieren autenticación por defecto (configurado en settings.py)
 2. Los endpoints públicos (AllowAny) son solo para registro y login
 3. Los usuarios solo pueden acceder a sus propios recursos, excepto administradores
-4. La eliminación es lógica (soft delete) por defecto 
+4. La eliminación es lógica (soft delete) por defecto
+
+## Feedback
+- **Enviar feedback (POST):** Cualquier usuario (anónimo o autenticado)
+- **Listar feedbacks (GET):** Solo admin
+- **Permiso:** IsAdminOrReadOnly 

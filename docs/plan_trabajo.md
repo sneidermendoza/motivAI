@@ -65,10 +65,10 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Visualización de progreso y reportes  # Feedback al usuario (endpoints listos, visualización depende del frontend)
 
 ## 7. Notificaciones y Feedback (Core MVP)
+- [x] Modelo de feedback y sugerencias  # Mejorar producto
+- [x] Endpoint para enviar feedback  # Recoger opiniones
+- [x] Panel admin para ver feedback  # Gestión interna (GET solo admin)
 - [ ] Endpoint para mensajes motivacionales (IA)  # Mantener motivación
-- [ ] Modelo de feedback y sugerencias  # Mejorar producto
-- [ ] Endpoint para enviar feedback  # Recoger opiniones
-- [ ] Panel admin para ver feedback  # Gestión interna
 - [ ] Implementar notificaciones push  # Engagement
 - [ ] Configuración de frecuencia por usuario  # Personalización
 

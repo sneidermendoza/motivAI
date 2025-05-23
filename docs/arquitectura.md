@@ -101,7 +101,7 @@ motivAI/
 - EjercicioRutina: ejercicios asignados a cada rutina
 - Progreso: registro de peso, medidas, fotos, energía, observaciones
 - Notificación: push y motivacionales
-- Feedback: sugerencias y reportes
+- Feedback: sugerencias, reportes y opiniones de usuarios (anónimos o autenticados), accesible por admin para mejora continua.
 - (Futuro) Logros, integración dispositivos, nutrición
 
 ## Explicación de Carpetas
