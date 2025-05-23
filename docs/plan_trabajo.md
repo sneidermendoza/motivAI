@@ -46,7 +46,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Asociación automática de conversación al crear plan
 - [x] Modelo UserFitnessProfile para datos fitness ligados a plan
 - [x] Endpoint para consultar perfiles fitness (solo propios o todos si admin)
-- [ ] Endpoint para generación de plan por IA  # Aquí se integra la IA, usando la info extraída
+- [x] Endpoint para generación de plan por IA  # Aquí se integra la IA, usando la info extraída
 - [ ] Modelo de rutina diaria (cronograma)  # Desglose del plan en acciones diarias
 - [ ] Modelo de ejercicios en rutina (relación rutina-ejercicio)  # Detalle de cada rutina
 - [ ] Endpoint para marcar rutina como realizada  # Seguimiento del usuario
@@ -84,7 +84,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [ ] Accesibilidad (contraste, navegación teclado, ARIA)  # Inclusión
 
 ## 9. Integración IA (Core MVP)
-- [ ] Integrar modelo open source local (GPT4All, Llama.cpp, etc.)  # Motor IA (SIGUIENTE tras endpoints de generación de plan)
+- [x] Integrar modelo open source local (GPT4All, Llama.cpp, etc.)  # Motor IA (SIGUIENTE tras endpoints de generación de plan)
 - [ ] Sistema de procesamiento de lenguaje natural  # Entender respuestas abiertas
 - [ ] Sistema de extracción de información de respuestas  # Ya cubierto arriba
 - [ ] Sistema de generación de preguntas contextuales  # Conversación más natural

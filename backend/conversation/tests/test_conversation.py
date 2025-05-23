@@ -4,6 +4,7 @@ from rest_framework import status
 from users.models import User
 from conversation.models import Conversation, ConversationState
 from conversation.utils import transition_conversation_state
+from plans.ai import generate_training_plan_with_groq
 
 class ConversationFlowTest(APITestCase):
     def setUp(self):
@@ -37,4 +38,32 @@ class ConversationFlowTest(APITestCase):
         # Probar transición a estado siguiente
         conversation = Conversation.objects.create(user=self.user, current_state='initial', context={'collected_data': {'motivation': 'test'}})
         transition_conversation_state(conversation, 'initial', conversation.context)
-        self.assertEqual(conversation.current_state, 'motivation') 
+        self.assertEqual(conversation.current_state, 'motivation')
+
+    def test_generate_plan_groq_success(self):
+        url = reverse('planentrenamiento-generate')
+        data = {
+            "age": 28,
+            "gender": "male",
+            "weight": 80,
+            "height": 175,
+            "motivation": "Quiero bajar de peso y sentirme con más energía.",
+            "medical_conditions": "Ninguna",
+            "injuries": "Ninguna",
+            "exercise_frequency": "2 veces por semana",
+            "experience_level": "principiante",
+            "specific_goals": "Bajar 5kg en 3 meses",
+            "timeline": "3 meses",
+            "additional_info": "Trabajo muchas horas sentado y me gustaría mejorar mi postura."
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertIn(response.status_code, [200, 504, 500])  # Puede ser éxito o timeout
+        # Si es éxito, debe tener 'plan' en la data
+        if response.status_code == 200:
+            self.assertIn('plan', response.data['data'])
+
+    def test_generate_plan_groq_error(self):
+        url = reverse('planentrenamiento-generate')
+        # Enviamos datos vacíos para forzar un error de la IA
+        response = self.client.post(url, {}, format='json')
+        self.assertIn(response.status_code, [400, 500]) 

@@ -5,6 +5,8 @@ from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfi
 from conversation.models import Conversation
 from conversation.serializers import ConversationSerializer
 from backend.utils import ResponseStandard, StandardResponseMixin
+from rest_framework.decorators import action
+from plans.ai import generate_training_plan_with_groq
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -39,6 +41,27 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Ya no se usa, la lógica está en create
         pass
+
+    @action(detail=False, methods=['post'], url_path='generate')
+    def generate_plan(self, request):
+        """
+        Genera un plan personalizado usando Groq (Llama-3) a partir de los datos enviados.
+        """
+        user_data = request.data
+        plan_json = generate_training_plan_with_groq(user_data)
+        if plan_json and not plan_json.get('error'):
+            return ResponseStandard.success(
+                data=plan_json,
+                message="Plan generado exitosamente por Groq IA.",
+                status=status.HTTP_200_OK
+            )
+        else:
+            error_msg = plan_json.get('error', 'No se pudo generar el plan con Groq IA.') if isinstance(plan_json, dict) else 'No se pudo generar el plan con Groq IA.'
+            return ResponseStandard.error(
+                message=error_msg,
+                data=plan_json,
+                status=plan_json.get('status_code', status.HTTP_500_INTERNAL_SERVER_ERROR) if isinstance(plan_json, dict) else status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     queryset = UserFitnessProfile.objects.all()

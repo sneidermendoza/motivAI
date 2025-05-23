@@ -71,6 +71,37 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 ## 3. Planes y Perfil Fitness
 - **Planes:**  
   CRUD completo sobre planes de entrenamiento (`/api/plans/planentrenamiento/`).
+- **Generación de plan por IA:**  
+  Endpoint: `POST /api/plans/planentrenamiento/generate/`  
+  Utiliza Groq (Llama-3) para generar un plan personalizado a partir de los datos del usuario.  
+  **Ejemplo de request:**
+  ```json
+  {
+    "age": 28,
+    "gender": "male",
+    "weight": 80,
+    "height": 175,
+    "motivation": "Quiero bajar de peso y sentirme con más energía.",
+    "medical_conditions": "Ninguna",
+    "injuries": "Ninguna",
+    "exercise_frequency": "2 veces por semana",
+    "experience_level": "principiante",
+    "specific_goals": "Bajar 5kg en 3 meses",
+    "timeline": "3 meses",
+    "additional_info": "Trabajo muchas horas sentado y me gustaría mejorar mi postura."
+  }
+  ```
+  **Respuesta exitosa:**
+  ```json
+  {
+    "success": true,
+    "message": "Plan generado exitosamente por Groq IA.",
+    "data": {
+      "plan": [ ... ],
+      "recommendations": [ ... ]
+    }
+  }
+  ```
 - **Perfil fitness:**  
   Asociado a cada plan, editable y consultable por el usuario.
 - **Conversación:**  
