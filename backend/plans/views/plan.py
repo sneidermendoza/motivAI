@@ -1,12 +1,16 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from plans.models.plan import PlanEntrenamiento, UserFitnessProfile
-from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer
+from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer, PlanEntrenamientoDetailSerializer
 from conversation.models import Conversation
 from conversation.serializers import ConversationSerializer
 from backend.utils import ResponseStandard, StandardResponseMixin
 from rest_framework.decorators import action
 from plans.ai import generate_training_plan_with_groq
+from datetime import timedelta
+from plans.models.routine import Routine
+from plans.models.exercise_routine import ExerciseRoutine
+from plans.models.exercise import Exercise
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -24,6 +28,37 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
         if not serializer.is_valid():
             return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         plan = serializer.save(usuario=request.user)
+        fecha_inicio = plan.fecha_inicio
+        duracion = (plan.fecha_fin - fecha_inicio).days + 1 if plan.fecha_fin else 28
+        dias_entrenar = request.data.get('dias_entrenar', 3)
+        dias_semana_entrenar = request.data.get('dias_semana_entrenar', [0,2,4])  # 0=Lunes
+        # Ejercicios de ejemplo (en el futuro, vendrán de la IA)
+        ejercicios_demo = [
+            {"nombre": "Sentadillas", "repeticiones": 12, "series": 3},
+            {"nombre": "Press de banca", "repeticiones": 10, "series": 3},
+            {"nombre": "Remo con barra", "repeticiones": 10, "series": 3}
+        ]
+        for i in range(duracion):
+            fecha = fecha_inicio + timedelta(days=i)
+            dia_semana = fecha.weekday()
+            tipo = 'entrenamiento' if dia_semana in dias_semana_entrenar else 'descanso'
+            rutina = Routine.objects.create(
+                plan=plan,
+                dia=i+1,
+                tipo=tipo,
+                fecha=fecha
+            )
+            # Asociar ejercicios solo si es entrenamiento
+            if tipo == 'entrenamiento':
+                for idx, ej in enumerate(ejercicios_demo):
+                    ejercicio, _ = Exercise.objects.get_or_create(nombre=ej["nombre"])
+                    ExerciseRoutine.objects.create(
+                        rutina=rutina,
+                        ejercicio=ejercicio,
+                        repeticiones=ej["repeticiones"],
+                        series=ej["series"],
+                        orden=idx+1
+                    )
         # Crea una conversación asociada automáticamente
         conversation = Conversation.objects.create(
             user=request.user,
@@ -31,10 +66,10 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
             current_state="initial"
         )
         conversation_data = ConversationSerializer(conversation).data
-        plan_data = PlanEntrenamientoSerializer(plan).data
+        plan_data = PlanEntrenamientoDetailSerializer(plan).data
         return ResponseStandard.success(
             data={"plan": plan_data, "conversation": conversation_data},
-            message="Plan y conversación creados correctamente.",
+            message="Plan, cronograma y conversación creados correctamente.",
             status=status.HTTP_201_CREATED
         )
 

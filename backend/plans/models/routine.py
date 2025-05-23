@@ -6,6 +6,7 @@ class Routine(models.Model):
     dia = models.PositiveIntegerField()  # Día dentro del plan
     tipo = models.CharField(max_length=20, choices=[('entrenamiento', 'Entrenamiento'), ('descanso', 'Descanso')])
     observaciones = models.TextField(null=True, blank=True)
+    fecha = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return f"Rutina día {self.dia} ({self.tipo}) - Plan {self.plan.id}" 

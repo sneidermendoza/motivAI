@@ -96,6 +96,73 @@
 - **Permiso:**
   - GET/POST: Autenticado (usuarios solo ven/crean sus planes, admin ve todos)
   - PUT/DELETE: Solo dueño o admin
+- **Body (POST):**
+```json
+{
+  "objetivo": "Ganar músculo",
+  "fecha_inicio": "2024-06-03",
+  "dias_entrenar": 3,
+  "dias_semana_entrenar": [0,2,4]
+}
+```
+- **Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Plan, cronograma y conversación creados correctamente.",
+  "data": {
+    "plan": {
+      "id": 1,
+      "usuario": 2,
+      "fecha_inicio": "2024-06-03",
+      "fecha_fin": null,
+      "objetivo": "Ganar músculo",
+      ...
+      "rutinas": [
+        {
+          "id": 10,
+          "dia": 1,
+          "tipo": "entrenamiento",
+          "fecha": "2024-06-03",
+          "observaciones": null,
+          "ejercicios": [
+            {
+              "id": 1,
+              "ejercicio": {
+                "id": 1,
+                "nombre": "Sentadillas",
+                "grupo_muscular": "Piernas",
+                "descripcion": "Ejercicio básico de piernas",
+                "imagen_url": "https://.../sentadillas.jpg",
+                "video_url": "https://.../sentadillas.mp4",
+                "equipo": "Ninguno",
+                "dificultad": "Fácil"
+              },
+              "repeticiones": 12,
+              "series": 3,
+              "peso_sugerido": null,
+              "descanso_segundos": 60,
+              "orden": 1,
+              "observaciones": null
+            },
+            ...
+          ]
+        },
+        {
+          "id": 11,
+          "dia": 2,
+          "tipo": "descanso",
+          "fecha": "2024-06-04",
+          "observaciones": null,
+          "ejercicios": []
+        },
+        ...
+      ]
+    },
+    "conversation": { ... }
+  }
+}
+```
 
 ### Generación de plan por IA (Groq)
 - **POST** `/api/plans/planentrenamiento/generate/`

@@ -30,4 +30,31 @@ class PlanFlowTest(APITestCase):
         data = {'fecha_inicio': '2024-06-01'}
         response = self.client.post(self.plan_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(response.data['success']) 
+        self.assertFalse(response.data['success'])
+
+    def test_cronograma_and_exercises_created(self):
+        data = {
+            'objetivo': 'Ganar músculo',
+            'fecha_inicio': '2024-06-03',
+            'dias_entrenar': 3,
+            'dias_semana_entrenar': [0,2,4]  # Lunes, Miércoles, Viernes
+        }
+        response = self.client.post(self.plan_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data['success'])
+        plan = response.data['data']['plan']
+        rutinas = plan['rutinas']
+        self.assertEqual(len(rutinas), 28)  # 4 semanas por default
+        entrenamientos = [r for r in rutinas if r['tipo'] == 'entrenamiento']
+        descansos = [r for r in rutinas if r['tipo'] == 'descanso']
+        self.assertGreater(len(entrenamientos), 0)
+        self.assertGreater(len(descansos), 0)
+        # Verificar que cada rutina de entrenamiento tiene ejercicios
+        for r in entrenamientos:
+            self.assertIn('ejercicios', r)
+            self.assertGreater(len(r['ejercicios']), 0)
+            for ej in r['ejercicios']:
+                self.assertIn('ejercicio', ej)
+                self.assertIn('nombre', ej['ejercicio'])
+                self.assertIn('imagen_url', ej['ejercicio'])
+                self.assertIn('video_url', ej['ejercicio']) 

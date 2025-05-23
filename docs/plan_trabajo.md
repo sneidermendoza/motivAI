@@ -47,14 +47,16 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Modelo UserFitnessProfile para datos fitness ligados a plan
 - [x] Endpoint para consultar perfiles fitness (solo propios o todos si admin)
 - [x] Endpoint para generación de plan por IA  # Aquí se integra la IA, usando la info extraída
-- [ ] Modelo de rutina diaria (cronograma)  # Desglose del plan en acciones diarias
-- [ ] Modelo de ejercicios en rutina (relación rutina-ejercicio)  # Detalle de cada rutina
+- [x] Modelo de rutina diaria (cronograma)  # Desglose del plan en acciones diarias
+- [x] Modelo de ejercicios en rutina (relación rutina-ejercicio)  # Detalle de cada rutina
+- [x] Generación automática de cronograma y ejercicios enriquecidos al crear plan
+- [x] Tests automáticos y documentación de cronograma y ejercicios
 - [ ] Endpoint para marcar rutina como realizada  # Seguimiento del usuario
 - [ ] Historial de planes (eliminación lógica)  # Permite ver evolución
 - [ ] Endpoint para modificar/adaptar plan  # Flexibilidad para el usuario
 
 ## 5. Ejercicios (Core MVP)
-- [ ] Modelo de ejercicio (creado por IA)  # Base de datos de ejercicios, necesario para rutinas
+- [x] Modelo de ejercicio (creado por IA o manual)  # Base de datos de ejercicios, necesario para rutinas
 - [ ] Base de datos inicial vacía (la IA los crea)  # Se poblará dinámicamente
 
 ## 6. Progreso (Core MVP)
@@ -146,3 +148,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 3. Las notificaciones y feedback son parte del MVP para mantener al usuario motivado
 4. El frontend debe ser intuitivo y fácil de usar
 5. La integración con IA es crítica para el funcionamiento del sistema
+
+## Permisos y seguridad
+- Todos los endpoints de planes, rutinas y ejercicios están protegidos por permisos de usuario autenticado (y admin para acceso global).
+- Ver tabla de permisos en docs/api_endpoints.md.

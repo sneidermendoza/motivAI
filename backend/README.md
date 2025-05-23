@@ -71,34 +71,62 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 ## 3. Planes y Perfil Fitness
 - **Planes:**  
   CRUD completo sobre planes de entrenamiento (`/api/plans/planentrenamiento/`).
-- **Generación de plan por IA:**  
-  Endpoint: `POST /api/plans/planentrenamiento/generate/`  
-  Utiliza Groq (Llama-3) para generar un plan personalizado a partir de los datos del usuario.  
-  **Ejemplo de request:**
-  ```json
-  {
-    "age": 28,
-    "gender": "male",
-    "weight": 80,
-    "height": 175,
-    "motivation": "Quiero bajar de peso y sentirme con más energía.",
-    "medical_conditions": "Ninguna",
-    "injuries": "Ninguna",
-    "exercise_frequency": "2 veces por semana",
-    "experience_level": "principiante",
-    "specific_goals": "Bajar 5kg en 3 meses",
-    "timeline": "3 meses",
-    "additional_info": "Trabajo muchas horas sentado y me gustaría mejorar mi postura."
-  }
-  ```
-  **Respuesta exitosa:**
+  Al crear un plan, se genera automáticamente un cronograma de rutinas con fechas reales, tipo (entrenamiento/descanso) y ejercicios enriquecidos (con imagen/video si existen).
+  **Ejemplo de respuesta:**
   ```json
   {
     "success": true,
-    "message": "Plan generado exitosamente por Groq IA.",
+    "message": "Plan, cronograma y conversación creados correctamente.",
     "data": {
-      "plan": [ ... ],
-      "recommendations": [ ... ]
+      "plan": {
+        "id": 1,
+        "usuario": 2,
+        "fecha_inicio": "2024-06-03",
+        "fecha_fin": null,
+        "objetivo": "Ganar músculo",
+        ...
+        "rutinas": [
+          {
+            "id": 10,
+            "dia": 1,
+            "tipo": "entrenamiento",
+            "fecha": "2024-06-03",
+            "observaciones": null,
+            "ejercicios": [
+              {
+                "id": 1,
+                "ejercicio": {
+                  "id": 1,
+                  "nombre": "Sentadillas",
+                  "grupo_muscular": "Piernas",
+                  "descripcion": "Ejercicio básico de piernas",
+                  "imagen_url": "https://.../sentadillas.jpg",
+                  "video_url": "https://.../sentadillas.mp4",
+                  "equipo": "Ninguno",
+                  "dificultad": "Fácil"
+                },
+                "repeticiones": 12,
+                "series": 3,
+                "peso_sugerido": null,
+                "descanso_segundos": 60,
+                "orden": 1,
+                "observaciones": null
+              },
+              ...
+            ]
+          },
+          {
+            "id": 11,
+            "dia": 2,
+            "tipo": "descanso",
+            "fecha": "2024-06-04",
+            "observaciones": null,
+            "ejercicios": []
+          },
+          ...
+        ]
+      },
+      "conversation": { ... }
     }
   }
   ```
@@ -109,7 +137,7 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 
 ## 4. Permisos y Seguridad
 - **Acceso a endpoints:**  
-  - Usuarios autenticados pueden consultar y modificar solo sus propios datos.
+  - Usuarios autenticados pueden consultar y modificar solo sus propios datos (planes, rutinas, ejercicios).
   - Admins pueden ver y modificar todo.
 - **El perfil de usuario incluye el campo `roles` para facilitar la construcción de menús dinámicos.**
 
