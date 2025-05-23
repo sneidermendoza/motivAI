@@ -9,4 +9,5 @@ router.register(r'states', views.ConversationStateViewSet, basename='state')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('extract/', views.FitnessExtractionView.as_view(), name='fitness-extract'),
 ] 

@@ -41,7 +41,7 @@ class ConversationFlowTest(APITestCase):
         self.assertEqual(conversation.current_state, 'motivation')
 
     def test_generate_plan_groq_success(self):
-        url = reverse('planentrenamiento-generate')
+        url = '/api/plans/planentrenamiento/generate/'
         data = {
             "age": 28,
             "gender": "male",
@@ -63,7 +63,45 @@ class ConversationFlowTest(APITestCase):
             self.assertIn('plan', response.data['data'])
 
     def test_generate_plan_groq_error(self):
-        url = reverse('planentrenamiento-generate')
+        url = '/api/plans/planentrenamiento/generate/'
         # Enviamos datos vacíos para forzar un error de la IA
         response = self.client.post(url, {}, format='json')
-        self.assertIn(response.status_code, [400, 500]) 
+        self.assertIn(response.status_code, [400, 500])
+
+class FitnessExtractionAPITest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='extractuser', email='extractuser@example.com', password='Testpass123')
+        login = self.client.post('/api/token/', {'username': 'extractuser', 'password': 'Testpass123'}, format='json')
+        self.access = login.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.access)
+        self.url = '/api/conversation/extract/'
+
+    def test_extract_complete_message(self):
+        data = {"message": "Tengo 30 años, peso 75kg, mido 180cm, soy hombre, quiero ganar músculo, entreno 4 veces por semana en gimnasio, no tengo lesiones."}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data['success'])
+        self.assertIn('edad', response.data['data'])
+        self.assertEqual(response.data['data']['edad'], 30)
+        self.assertEqual(response.data['data']['sexo'], 'masculino')
+        self.assertEqual(response.data['data']['peso'], 75)
+        self.assertEqual(response.data['data']['altura'], 180)
+        self.assertEqual(response.data['data']['objetivo'], 'ganar músculo')
+        self.assertEqual(response.data['data']['lugar_entrenamiento'], 'gimnasio')
+        self.assertEqual(response.data['data']['missing_fields'], [])
+
+    def test_extract_incomplete_message(self):
+        data = {"message": "Quiero perder peso y entrenar en casa."}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.data['success'])
+        self.assertIn('missing_fields', response.data['data'])
+        self.assertGreater(len(response.data['data']['missing_fields']), 0)
+
+    def test_extract_ambiguous_message(self):
+        data = {"message": "Me gustaría mejorar mi salud."}
+        response = self.client.post(self.url, data, format='json')
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(response.data['success'])
+        self.assertIn('missing_fields', response.data['data'])
+        self.assertGreater(len(response.data['data']['missing_fields']), 0) 

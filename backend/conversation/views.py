@@ -10,13 +10,17 @@ from .serializers import (
     QuestionSerializer,
     ResponseSerializer,
     ConversationStateSerializer,
-    UserResponseSerializer
+    UserResponseSerializer,
+    FitnessExtractionInputSerializer,
+    FitnessExtractionOutputSerializer
 )
 from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
 from .utils import extract_and_update_fitness_profile, transition_conversation_state
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from backend.utils import ResponseStandard
+from .ai import extract_fitness_data_with_groq
+from rest_framework.views import APIView
 
 class ConversationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -89,4 +93,24 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class ConversationStateViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = ConversationState.objects.all()
-    serializer_class = ConversationStateSerializer 
+    serializer_class = ConversationStateSerializer
+
+class FitnessExtractionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = FitnessExtractionInputSerializer(data=request.data)
+        if not serializer.is_valid():
+            return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        message = serializer.validated_data['message']
+        result = extract_fitness_data_with_groq(message)
+        output_serializer = FitnessExtractionOutputSerializer(data=result)
+        if output_serializer.is_valid():
+            # Si hay error o campos faltantes, responder con error
+            if result.get('error'):
+                return ResponseStandard.error(message="Error al extraer datos con IA", data=result, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            if result.get('missing_fields'):
+                return ResponseStandard.error(message="Faltan campos", data=result, status=status.HTTP_400_BAD_REQUEST)
+            return ResponseStandard.success(data=result, message="Datos extraídos correctamente", status=status.HTTP_200_OK)
+        else:
+            return ResponseStandard.error(message="Respuesta inválida de la IA", data=output_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 

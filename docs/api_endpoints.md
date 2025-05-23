@@ -157,6 +157,49 @@
 - **POST** `/api/conversation/conversations/{id}/reset/`
 - **Permiso:** Autenticado (solo dueño)
 
+### Extracción y validación conversacional (IA)
+- **POST** `/api/conversation/extract/`
+- **Permiso:** Autenticado
+- **Body:**
+```json
+{
+  "message": "Tengo 30 años, peso 75kg, mido 180cm, soy hombre, quiero ganar músculo, entreno 4 veces por semana en gimnasio, no tengo lesiones."
+}
+```
+- **Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Datos extraídos correctamente",
+  "data": {
+    "edad": 30,
+    "sexo": "masculino",
+    "peso": 75,
+    "altura": 180,
+    "objetivo": "ganar músculo",
+    "motivacion": "",
+    "nivel_actividad": "",
+    "restricciones": "no tengo lesiones",
+    "frecuencia_ejercicio": "4 veces por semana",
+    "nivel_experiencia": null,
+    "dias_entrenar": 4,
+    "lugar_entrenamiento": "gimnasio",
+    "otros": null,
+    "missing_fields": []
+  }
+}
+```
+- **Respuesta con campos faltantes:**
+```json
+{
+  "success": false,
+  "message": "Faltan campos",
+  "data": {
+    "missing_fields": ["edad", "peso", "altura", "sexo", "objetivo"]
+  }
+}
+```
+
 ---
 
 ## Feedback y Notificaciones
@@ -190,6 +233,7 @@
 | /api/conversation/conversations/                 |   ✔     |   ✔   |
 | /api/conversation/conversations/{id}/respond/    |   ✔     |   ✔   |
 | /api/conversation/conversations/{id}/reset/      |   ✔     |   ✔   |
+| /api/conversation/extract/                       |   ✔     |   ✔   |
 | /api/feedback/feedback/ (POST)                   |   ✔     |   ✔   |
 | /api/feedback/feedback/ (GET)                    |         |   ✔   |
 | /api/notifications/notification/                 |   ✔     |   ✔   |

@@ -118,6 +118,18 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [ ] Endpoint para exportar datos del usuario (CSV/JSON)
 - [ ] Webhooks para integración con apps externas
 
+## Tareas completadas
+- [x] Extracción y validación conversacional con IA (Groq)
+- [x] Endpoint /api/conversation/extract/ implementado y documentado
+- [x] Permisos y respuestas claras
+- [x] Tests automáticos para extracción conversacional
+- [x] Limpieza de historial y push seguro
+
+## Próximos pasos
+- Integración frontend con el nuevo endpoint conversacional
+- Mejoras en prompts y validación conversacional avanzada
+- Feedback de usuario y ajustes UX
+
 ---
 
 **¿Cómo marcar tareas?**

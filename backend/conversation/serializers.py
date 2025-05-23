@@ -64,4 +64,24 @@ class UserResponseSerializer(serializers.Serializer):
             data['conversation'] = conversation
             return data
         except Conversation.DoesNotExist:
-            raise serializers.ValidationError("Conversación no encontrada.") 
+            raise serializers.ValidationError("Conversación no encontrada.")
+
+class FitnessExtractionInputSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+class FitnessExtractionOutputSerializer(serializers.Serializer):
+    edad = serializers.IntegerField(required=False, allow_null=True)
+    sexo = serializers.CharField(required=False, allow_null=True)
+    peso = serializers.FloatField(required=False, allow_null=True)
+    altura = serializers.FloatField(required=False, allow_null=True)
+    objetivo = serializers.CharField(required=False, allow_null=True)
+    motivacion = serializers.CharField(required=False, allow_null=True)
+    nivel_actividad = serializers.CharField(required=False, allow_null=True)
+    restricciones = serializers.CharField(required=False, allow_null=True)
+    frecuencia_ejercicio = serializers.CharField(required=False, allow_null=True)
+    nivel_experiencia = serializers.CharField(required=False, allow_null=True)
+    dias_entrenar = serializers.IntegerField(required=False, allow_null=True)
+    lugar_entrenamiento = serializers.CharField(required=False, allow_null=True)
+    otros = serializers.DictField(required=False, allow_null=True)
+    missing_fields = serializers.ListField(child=serializers.CharField(), required=False)
+    error = serializers.CharField(required=False) 
