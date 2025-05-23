@@ -27,7 +27,7 @@ class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     API endpoint para gestionar conversaciones
     """
     queryset = Conversation.objects.all()
-    serializer_class = ConversationSerializer
+    serializer_class = ConversationCreateSerializer
     permission_classes = [IsAuthenticated]
     swagger_tags = ['Conversación']
 
@@ -40,11 +40,14 @@ class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
 
     @swagger_auto_schema(
         operation_description="Crea una nueva conversación",
-        request_body=ConversationSerializer,
+        request_body=ConversationCreateSerializer,
         responses={201: ConversationSerializer()}
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     @swagger_auto_schema(
         operation_description="Reinicia una conversación existente",

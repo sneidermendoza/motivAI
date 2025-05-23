@@ -99,7 +99,7 @@ motivAI/
 - Rutina: cronograma diario del plan
 - Ejercicio: base de datos creada por IA
 - EjercicioRutina: ejercicios asignados a cada rutina
-- Progreso: registro de peso, medidas, fotos
+- Progreso: registro de peso, medidas, fotos, energía, observaciones
 - Notificación: push y motivacionales
 - Feedback: sugerencias y reportes
 - (Futuro) Logros, integración dispositivos, nutrición

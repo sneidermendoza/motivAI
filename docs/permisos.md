@@ -37,6 +37,12 @@
 - `/api/conversation/extract/` - `IsAuthenticated`
 - `/api/conversation/reset/` - `IsAuthenticated`
 
+## Progreso
+- **Listar/Crear/Modificar/Eliminar progreso:**
+  - Usuario autenticado: solo puede acceder a sus propios registros
+  - Admin: puede acceder a todos los registros
+  - Permiso: IsAuthenticated + IsOwnerOrAdmin
+
 ## Permisos Personalizados
 
 ### IsAdminOrReadOnly

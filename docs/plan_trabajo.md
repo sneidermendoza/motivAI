@@ -60,9 +60,9 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [ ] Base de datos inicial vacía (la IA los crea)  # Se poblará dinámicamente
 
 ## 6. Progreso (Core MVP)
-- [ ] Modelo de progreso y medidas (peso, medidas, foto)  # Seguimiento de resultados
-- [ ] Gestión de fotos de progreso  # Motivación visual
-- [ ] Visualización de progreso y reportes  # Feedback al usuario
+- [x] Modelo de progreso y medidas (peso, medidas, foto)  # Seguimiento de resultados
+- [x] Gestión de fotos de progreso  # Motivación visual
+- [x] Visualización de progreso y reportes  # Feedback al usuario (endpoints listos, visualización depende del frontend)
 
 ## 7. Notificaciones y Feedback (Core MVP)
 - [ ] Endpoint para mensajes motivacionales (IA)  # Mantener motivación
@@ -136,6 +136,9 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Limpieza de historial y push seguro
 - [x] Documentación de permisos por endpoint
 - [x] Implementación de roles y permisos personalizados
+- [x] Tests automáticos para progreso y MVP flow
+- [x] Ejemplos claros en Swagger/OpenAPI para progreso
+- [x] Corrección de creación de conversación (user asignado automáticamente)
 
 ## Próximos pasos
 - Agregar ejemplos reales en Swagger/OpenAPI

@@ -8,6 +8,7 @@
 - [Conversación](#conversación)
 - [Feedback y Notificaciones](#feedback-y-notificaciones)
 - [Resumen de Permisos por Endpoint](#resumen-de-permisos-por-endpoint)
+- [Progreso del usuario](#progreso-del-usuario)
 
 ---
 
@@ -483,3 +484,39 @@ Respuesta:
 2. Visualización de rutinas diarias
 3. Marcado de rutinas como realizadas
 4. Actualización de progreso 
+
+### Progreso del usuario
+- **GET** `/api/progress/progreso/` — Lista todos los registros del usuario autenticado (o todos si es admin)
+- **POST** `/api/progress/progreso/` — Crea un nuevo registro de progreso (foto opcional)
+- **GET** `/api/progress/progreso/{id}/` — Detalle de un registro de progreso
+- **PUT/PATCH** `/api/progress/progreso/{id}/` — Actualiza un registro de progreso
+- **DELETE** `/api/progress/progreso/{id}/` — Elimina un registro de progreso
+
+**Permisos:** Solo el dueño o admin puede ver/modificar/eliminar cada registro.
+
+**Ejemplo de request (POST):**
+```json
+{
+  "peso": 70.5,
+  "medidas": {"cintura": 80, "pecho": 95},
+  "imc": 22.5,
+  "energia": "Alta",
+  "observaciones": "Me siento bien",
+  "foto_progreso": "(archivo imagen opcional)"
+}
+```
+
+**Ejemplo de response (GET):**
+```json
+{
+  "id": 1,
+  "usuario": 5,
+  "fecha": "2024-06-10",
+  "peso": 70.5,
+  "medidas": {"cintura": 80, "pecho": 95},
+  "imc": 22.5,
+  "energia": "Alta",
+  "observaciones": "Me siento bien",
+  "foto_progreso": "/media/progress_photos/ejemplo.jpg"
+}
+``` 
