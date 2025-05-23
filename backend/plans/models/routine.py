@@ -9,6 +9,7 @@ class Routine(models.Model):
     fecha = models.DateField(null=True, blank=True)
     realizada = models.BooleanField(default=False)
     fecha_realizacion = models.DateField(null=True, blank=True)
+    status = models.CharField(max_length=20, default='activo')
 
     def __str__(self):
         return f"Rutina día {self.dia} ({self.tipo}) - Plan {self.plan.id}" 

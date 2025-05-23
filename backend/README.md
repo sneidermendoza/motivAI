@@ -262,4 +262,44 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
 - **Errores comunes:**
   - 403: No tienes permiso para modificar esta rutina.
   - 400: La rutina ya fue marcada como realizada.
+
+## Soft delete y filtrado por estado
+
+Los modelos principales (`PlanEntrenamiento`, `Routine`, `Exercise`, `ExerciseRoutine`) incluyen un campo `status`:
+- `activo`: el objeto está disponible y visible en los listados por defecto.
+- `inactivo`: el objeto ha sido eliminado lógicamente (soft delete) y no aparece en los listados por defecto.
+
+### Eliminación lógica (soft delete)
+- Al eliminar un plan, rutina o ejercicio, el campo `status` se marca como `inactivo` en vez de borrarse físicamente.
+- El objeto no desaparece de la base de datos y puede ser consultado filtrando por `status=inactivo`.
+- Los endpoints de listado filtran por defecto por `status=activo`.
+- Solo el dueño (usuario creador) o admin puede eliminar (soft delete) un plan o rutina.
+- Cualquier usuario autenticado puede eliminar (soft delete) un ejercicio.
+
+### Filtrado por estado
+- Se puede obtener la lista de objetos inactivos usando el parámetro de query `?status=inactivo`.
+- Ejemplo: `/api/plans/planentrenamiento/?status=inactivo`
+
+### Checklist de comportamiento esperado
+- [x] Eliminar un objeto no lo borra físicamente, solo cambia su `status` a `inactivo`.
+- [x] Los listados solo muestran objetos con `status=activo` por defecto.
+- [x] Se puede listar los inactivos con `?status=inactivo`.
+- [x] Solo el dueño o admin puede eliminar planes/rutinas.
+- [x] Los tests automáticos cubren soft delete y filtrado.
+
+### Permisos
+- **Planes/Rutinas:** Solo el dueño o admin puede eliminar (soft delete).
+- **Ejercicios:** Cualquier usuario autenticado puede eliminar (soft delete).
+
+### Ejemplo de respuesta de listado
+```json
+{
+  "success": true,
+  "message": "Listado obtenido correctamente",
+  "data": [
+    { "id": 1, "objetivo": "Ganar músculo", "status": "activo", ... },
+    ...
+  ]
+}
+```
   

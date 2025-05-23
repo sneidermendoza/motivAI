@@ -27,7 +27,22 @@ schema_view = get_schema_view(
    openapi.Info(
       title="motivAI API",
       default_version='v1',
-      description="Documentación interactiva de la API motivAI",
+      description="""
+      # Documentación de la API motivAI
+      
+      ## Secciones
+      - **Autenticación**: Registro, login y gestión de usuarios
+      - **Planes**: Creación y gestión de planes de entrenamiento
+      - **Ejercicios**: Gestión de ejercicios y rutinas diarias
+      - **Conversación**: Sistema conversacional y extracción de información
+      - **Progreso**: Seguimiento del progreso y métricas
+      - **Notificaciones**: Sistema de notificaciones y alertas
+      - **Feedback**: Sistema de feedback y sugerencias
+      
+      ## Notas
+      - Todos los endpoints requieren autenticación excepto los marcados como públicos
+      - Los tokens JWT deben incluirse en el header como `Authorization: Bearer <token>`
+      """,
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="tu-email@ejemplo.com"),
       license=openapi.License(name="BSD License"),

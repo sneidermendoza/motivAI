@@ -18,26 +18,45 @@ from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
 from .utils import extract_and_update_fitness_profile, transition_conversation_state
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
-from backend.utils import ResponseStandard
+from backend.utils import ResponseStandard, StandardResponseMixin
 from .ai import extract_fitness_data_with_groq
 from rest_framework.views import APIView
 
-class ConversationViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar conversaciones
+    """
+    queryset = Conversation.objects.all()
     serializer_class = ConversationSerializer
+    permission_classes = [IsAuthenticated]
+    swagger_tags = ['Conversación']
 
-    def get_queryset(self):
-        return Conversation.objects.filter(user=self.request.user)
+    @swagger_auto_schema(
+        operation_description="Lista las conversaciones del usuario",
+        responses={200: ConversationSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
+    @swagger_auto_schema(
+        operation_description="Crea una nueva conversación",
+        request_body=ConversationSerializer,
+        responses={201: ConversationSerializer()}
+    )
     def create(self, request, *args, **kwargs):
-        serializer = ConversationCreateSerializer(data=request.data)
-        if not serializer.is_valid():
-            return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        conversation = serializer.save(user=request.user)
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Reinicia una conversación existente",
+        responses={200: ConversationSerializer()}
+    )
+    @action(detail=True, methods=['post'])
+    def reset(self, request, pk=None):
+        conversation = self.get_object()
+        conversation.reset()
         return ResponseStandard.success(
             data=ConversationSerializer(conversation).data,
-            message="Conversación creada correctamente.",
-            status=status.HTTP_201_CREATED
+            message="Conversación reiniciada correctamente."
         )
 
     @swagger_auto_schema(
@@ -73,22 +92,14 @@ class ConversationViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
-    @action(detail=True, methods=['post'])
-    def reset(self, request, pk=None):
-        conversation = self.get_object()
-        conversation.current_state = 'initial'
-        conversation.context = {}
-        conversation.save()
-        return ResponseStandard.success(
-            data=ConversationSerializer(conversation).data,
-            message="Conversación reiniciada.",
-            status=status.HTTP_200_OK
-        )
-
-class QuestionViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = Question.objects.filter(is_active=True)
+class QuestionViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar preguntas
+    """
+    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
+    swagger_tags = ['Conversación']
 
 class ConversationStateViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

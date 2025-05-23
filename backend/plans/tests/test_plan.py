@@ -115,4 +115,67 @@ class PlanFlowTest(APITestCase):
         self.assertEqual(response1.status_code, 200)
         response2 = self.client.post(url, {}, format='json')
         self.assertEqual(response2.status_code, 400)
-        self.assertFalse(response2.data['success']) 
+        self.assertFalse(response2.data['success'])
+
+    def test_soft_delete_plan(self):
+        data = {'objetivo': 'Soft Delete', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        plan_id = response.data['data']['plan']['id']
+        url = f'/api/plans/planentrenamiento/{plan_id}/'
+        # Soft delete
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+        # El plan sigue existiendo pero con status inactivo
+        from plans.models.plan import PlanEntrenamiento
+        plan = PlanEntrenamiento.objects.get(id=plan_id)
+        self.assertEqual(plan.status, 'inactivo')
+        # No aparece en listado por default
+        response = self.client.get(self.plan_url)
+        ids = [p['id'] for p in response.data['data']]
+        self.assertNotIn(plan_id, ids)
+        # Aparece si filtro por status=inactivo
+        response = self.client.get(self.plan_url + '?status=inactivo')
+        ids = [p['id'] for p in response.data['data']]
+        self.assertIn(plan_id, ids)
+
+    def test_soft_delete_routine(self):
+        data = {'objetivo': 'Soft Delete Routine', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        rutina_id = response.data['data']['plan']['rutinas'][0]['id']
+        url = f'/api/plans/rutinas/{rutina_id}/'
+        # Soft delete
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+        from plans.models.routine import Routine
+        rutina = Routine.objects.get(id=rutina_id)
+        self.assertEqual(rutina.status, 'inactivo')
+        # No aparece en listado por default
+        response = self.client.get('/api/plans/rutinas/')
+        ids = [r['id'] for r in response.data['data']]
+        self.assertNotIn(rutina_id, ids)
+        # Aparece si filtro por status=inactivo
+        response = self.client.get('/api/plans/rutinas/?status=inactivo')
+        ids = [r['id'] for r in response.data['data']]
+        self.assertIn(rutina_id, ids)
+
+    def test_soft_delete_exercise(self):
+        from plans.models.exercise import Exercise
+        # Crear ejercicio
+        ejercicio = Exercise.objects.create(nombre='SoftDeleteTest', grupo_muscular='Test')
+        url = f'/api/plans/ejercicios/{ejercicio.id}/'
+        # Soft delete
+        login = self.client.post('/api/token/', {'username': 'planuser', 'password': 'Testpass123'}, format='json')
+        access = login.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 200)
+        ejercicio.refresh_from_db()
+        self.assertEqual(ejercicio.status, 'inactivo')
+        # No aparece en listado por default
+        response = self.client.get('/api/plans/ejercicios/')
+        ids = [e['id'] for e in response.data['data']]
+        self.assertNotIn(ejercicio.id, ids)
+        # Aparece si filtro por status=inactivo
+        response = self.client.get('/api/plans/ejercicios/?status=inactivo')
+        ids = [e['id'] for e in response.data['data']]
+        self.assertIn(ejercicio.id, ids) 

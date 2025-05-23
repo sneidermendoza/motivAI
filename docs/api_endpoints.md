@@ -341,3 +341,145 @@
 ---
 
 **Actualizado a la fecha: 2024-05-23** 
+
+# Documentación de Endpoints motivAI
+
+## Autenticación
+
+### Obtener Token JWT
+```http
+POST /api/token/
+Content-Type: application/json
+
+{
+    "username": "usuario@ejemplo.com",
+    "password": "contraseña123"
+}
+```
+
+Respuesta:
+```json
+{
+    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+}
+```
+
+## Usuarios
+
+### Registro
+```http
+POST /api/users/register/
+Content-Type: application/json
+
+{
+    "email": "nuevo@ejemplo.com",
+    "password": "contraseña123",
+    "first_name": "Juan",
+    "last_name": "Pérez",
+    "role": "user"
+}
+```
+
+### Perfil
+```http
+GET /api/users/profile/
+Authorization: Bearer <token>
+```
+
+## Planes
+
+### Crear Plan
+```http
+POST /api/plans/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "nombre": "Plan de pérdida de peso",
+    "objetivo": "perder_peso",
+    "fecha_inicio": "2024-03-20",
+    "fecha_fin": "2024-06-20",
+    "dias_entrenar": 3,
+    "dias_semana_entrenar": [0, 2, 4]
+}
+```
+
+### Generar Plan con IA
+```http
+POST /api/plans/generate/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "edad": 28,
+    "peso": 80,
+    "altura": 175,
+    "objetivo": "perder_peso",
+    "nivel": "principiante",
+    "restricciones": ["rodilla_derecha"],
+    "preferencias": ["cardio", "fuerza"]
+}
+```
+
+## Rutinas
+
+### Marcar Rutina como Realizada
+```http
+POST /api/routines/{id}/realizar/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "fecha_realizacion": "2024-03-20"
+}
+```
+
+## Conversación
+
+### Extraer Información
+```http
+POST /api/conversation/extract/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "text": "Quiero perder 5kg en 3 meses, tengo 28 años, peso 80kg y mido 175cm. Soy principiante y tengo una lesión en la rodilla derecha."
+}
+```
+
+Respuesta:
+```json
+{
+    "edad": 28,
+    "peso": 80,
+    "altura": 175,
+    "objetivo": "perder_peso",
+    "meta": "5kg en 3 meses",
+    "nivel": "principiante",
+    "restricciones": ["rodilla_derecha"]
+}
+```
+
+## Códigos de Error Comunes
+
+- 400: Bad Request - Datos inválidos
+- 401: Unauthorized - Token inválido o expirado
+- 403: Forbidden - No tiene permisos
+- 404: Not Found - Recurso no encontrado
+- 500: Internal Server Error - Error del servidor
+
+## Ejemplos de Uso Común
+
+### Flujo de Creación de Plan
+1. Registro/Login
+2. Extracción de información conversacional
+3. Generación de plan con IA
+4. Creación de plan con cronograma
+5. Asignación de rutinas y ejercicios
+
+### Flujo de Seguimiento
+1. Consulta de plan activo
+2. Visualización de rutinas diarias
+3. Marcado de rutinas como realizadas
+4. Actualización de progreso 

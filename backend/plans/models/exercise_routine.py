@@ -11,6 +11,7 @@ class ExerciseRoutine(models.Model):
     descanso_segundos = models.PositiveIntegerField(default=60)
     orden = models.PositiveIntegerField(default=1)
     observaciones = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=20, default='activo')
 
     def __str__(self):
         return f"{self.ejercicio.nombre} en rutina {self.rutina.id}" 

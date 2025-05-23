@@ -111,8 +111,16 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Documentar lógica de permisos y ejemplos de uso
 - [x] Proteger endpoints sensibles según rol
 - [x] Agregar tests de permisos y acceso
+- [x] Crear documentación detallada de permisos por endpoint
 
-## 12. Mejoras Futuras (no MVP)
+## 12. Documentación de API (nuevo)
+- [x] Documentar permisos por endpoint
+- [ ] Agregar ejemplos reales en Swagger/OpenAPI
+- [ ] Documentar flujos de uso comunes
+- [ ] Agregar ejemplos de request/response
+- [ ] Documentar códigos de error y manejo
+
+## 13. Mejoras Futuras (no MVP)
 - [ ] Gamificación (logros, medallas)
 - [ ] Integración con dispositivos externos (wearables, apps)
 - [ ] Planes de nutrición
@@ -126,8 +134,12 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Permisos y respuestas claras
 - [x] Tests automáticos para extracción conversacional
 - [x] Limpieza de historial y push seguro
+- [x] Documentación de permisos por endpoint
+- [x] Implementación de roles y permisos personalizados
 
 ## Próximos pasos
+- Agregar ejemplos reales en Swagger/OpenAPI
+- Documentar flujos de uso comunes
 - Integración frontend con el nuevo endpoint conversacional
 - Mejoras en prompts y validación conversacional avanzada
 - Feedback de usuario y ajustes UX

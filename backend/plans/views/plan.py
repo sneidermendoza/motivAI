@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from plans.models.plan import PlanEntrenamiento, UserFitnessProfile
-from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer, PlanEntrenamientoDetailSerializer, RoutineSerializer
+from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer, PlanEntrenamientoDetailSerializer, RoutineSerializer, ExerciseSerializer
 from conversation.models import Conversation
 from conversation.serializers import ConversationSerializer
 from backend.utils import ResponseStandard, StandardResponseMixin
@@ -11,6 +11,8 @@ from datetime import timedelta
 from plans.models.routine import Routine
 from plans.models.exercise_routine import ExerciseRoutine
 from plans.models.exercise import Exercise
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -18,11 +20,20 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return True
         return request.user and request.user.is_staff
 
-class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
+class PlanEntrenamientoViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar planes de entrenamiento
+    """
     queryset = PlanEntrenamiento.objects.all()
     serializer_class = PlanEntrenamientoSerializer
     permission_classes = [permissions.IsAuthenticated]
+    swagger_tags = ['Planes']
 
+    @swagger_auto_schema(
+        operation_description="Crea un nuevo plan de entrenamiento",
+        request_body=PlanEntrenamientoSerializer,
+        responses={201: PlanEntrenamientoDetailSerializer()}
+    )
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
@@ -77,6 +88,23 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
         # Ya no se usa, la lógica está en create
         pass
 
+    @swagger_auto_schema(
+        operation_description="Genera un plan personalizado usando IA",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['edad', 'peso', 'altura', 'objetivo'],
+            properties={
+                'edad': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'peso': openapi.Schema(type=openapi.TYPE_NUMBER),
+                'altura': openapi.Schema(type=openapi.TYPE_INTEGER),
+                'objetivo': openapi.Schema(type=openapi.TYPE_STRING),
+                'nivel': openapi.Schema(type=openapi.TYPE_STRING),
+                'restricciones': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING)),
+                'preferencias': openapi.Schema(type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING))
+            }
+        ),
+        responses={200: openapi.Response(description="Plan generado exitosamente")}
+    )
     @action(detail=False, methods=['post'], url_path='generate')
     def generate_plan(self, request):
         """
@@ -98,10 +126,35 @@ class PlanEntrenamientoViewSet(viewsets.ModelViewSet):
                 status=plan_json.get('status_code', status.HTTP_500_INTERNAL_SERVER_ERROR) if isinstance(plan_json, dict) else status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    def get_queryset(self):
+        user = self.request.user
+        status_param = self.request.query_params.get('status', 'activo')
+        qs = PlanEntrenamiento.objects.all()
+        if not user.is_staff:
+            qs = qs.filter(usuario=user)
+        if status_param:
+            qs = qs.filter(status=status_param)
+        return qs
+
+    def destroy(self, request, *args, **kwargs):
+        plan = self.get_object()
+        user = request.user
+        if not (user.is_staff or plan.usuario == user):
+            return ResponseStandard.error(message="No tienes permiso para eliminar este plan.", status=status.HTTP_403_FORBIDDEN)
+        if plan.status == 'inactivo':
+            return ResponseStandard.error(message="El plan ya está inactivo.", status=status.HTTP_400_BAD_REQUEST)
+        plan.status = 'inactivo'
+        plan.save()
+        return ResponseStandard.success(message="Plan marcado como inactivo (eliminación lógica).", data=None, status=status.HTTP_200_OK)
+
 class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar perfiles de fitness
+    """
     queryset = UserFitnessProfile.objects.all()
     serializer_class = UserFitnessProfileSerializer
     permission_classes = [permissions.IsAuthenticated, IsAdminOrReadOnly]
+    swagger_tags = ['Planes']
 
     def get_queryset(self):
         user = self.request.user
@@ -109,11 +162,25 @@ class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
             return UserFitnessProfile.objects.all()
         return UserFitnessProfile.objects.filter(usuario=user)
 
-class RoutineViewSet(viewsets.ModelViewSet):
+class RoutineViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar rutinas
+    """
     queryset = Routine.objects.all()
     serializer_class = RoutineSerializer
     permission_classes = [permissions.IsAuthenticated]
+    swagger_tags = ['Ejercicios']
 
+    @swagger_auto_schema(
+        operation_description="Marca una rutina como realizada",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'fecha_realizacion': openapi.Schema(type=openapi.TYPE_STRING, format='date')
+            }
+        ),
+        responses={200: RoutineSerializer()}
+    )
     @action(detail=True, methods=['post'], url_path='realizar')
     def marcar_realizada(self, request, pk=None):
         rutina = self.get_object()
@@ -132,4 +199,46 @@ class RoutineViewSet(viewsets.ModelViewSet):
             data=RoutineSerializer(rutina).data,
             message="Rutina marcada como realizada.",
             status=status.HTTP_200_OK
-        ) 
+        )
+
+    def get_queryset(self):
+        status_param = self.request.query_params.get('status', 'activo')
+        qs = Routine.objects.all()
+        if status_param:
+            qs = qs.filter(status=status_param)
+        return qs
+
+    def destroy(self, request, *args, **kwargs):
+        rutina = self.get_object()
+        user = request.user
+        if not (user.is_staff or rutina.plan.usuario == user):
+            return ResponseStandard.error(message="No tienes permiso para eliminar esta rutina.", status=status.HTTP_403_FORBIDDEN)
+        if rutina.status == 'inactivo':
+            return ResponseStandard.error(message="La rutina ya está inactiva.", status=status.HTTP_400_BAD_REQUEST)
+        rutina.status = 'inactivo'
+        rutina.save()
+        return ResponseStandard.success(message="Rutina marcada como inactiva (eliminación lógica).", data=None, status=status.HTTP_200_OK)
+
+class ExerciseViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar ejercicios
+    """
+    queryset = Exercise.objects.all()
+    serializer_class = ExerciseSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    swagger_tags = ['Ejercicios']
+
+    def get_queryset(self):
+        status_param = self.request.query_params.get('status', 'activo')
+        qs = Exercise.objects.all()
+        if status_param:
+            qs = qs.filter(status=status_param)
+        return qs
+
+    def destroy(self, request, *args, **kwargs):
+        ejercicio = self.get_object()
+        if ejercicio.status == 'inactivo':
+            return ResponseStandard.error(message="El ejercicio ya está inactivo.", status=status.HTTP_400_BAD_REQUEST)
+        ejercicio.status = 'inactivo'
+        ejercicio.save()
+        return ResponseStandard.success(message="Ejercicio marcado como inactivo (eliminación lógica).", data=None, status=status.HTTP_200_OK) 
