@@ -51,7 +51,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Modelo de ejercicios en rutina (relación rutina-ejercicio)  # Detalle de cada rutina
 - [x] Generación automática de cronograma y ejercicios enriquecidos al crear plan
 - [x] Tests automáticos y documentación de cronograma y ejercicios
-- [ ] Endpoint para marcar rutina como realizada  # Seguimiento del usuario
+- [x] Endpoint para marcar rutina como realizada  # Seguimiento del usuario
 - [ ] Historial de planes (eliminación lógica)  # Permite ver evolución
 - [ ] Endpoint para modificar/adaptar plan  # Flexibilidad para el usuario
 
@@ -150,5 +150,4 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 5. La integración con IA es crítica para el funcionamiento del sistema
 
 ## Permisos y seguridad
-- Todos los endpoints de planes, rutinas y ejercicios están protegidos por permisos de usuario autenticado (y admin para acceso global).
-- Ver tabla de permisos en docs/api_endpoints.md.
+- Todos los endpoints de planes, rutinas y ejercicios están protegidos por permisos de usuario autenticado (y admin para acceso global). Verificado en tests y documentación.

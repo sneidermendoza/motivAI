@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from plans.models.plan import PlanEntrenamiento, UserFitnessProfile
-from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer, PlanEntrenamientoDetailSerializer
+from plans.serializers.plan import PlanEntrenamientoSerializer, UserFitnessProfileSerializer, PlanEntrenamientoDetailSerializer, RoutineSerializer
 from conversation.models import Conversation
 from conversation.serializers import ConversationSerializer
 from backend.utils import ResponseStandard, StandardResponseMixin
@@ -107,4 +107,29 @@ class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         user = self.request.user
         if user.is_staff:
             return UserFitnessProfile.objects.all()
-        return UserFitnessProfile.objects.filter(usuario=user) 
+        return UserFitnessProfile.objects.filter(usuario=user)
+
+class RoutineViewSet(viewsets.ModelViewSet):
+    queryset = Routine.objects.all()
+    serializer_class = RoutineSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    @action(detail=True, methods=['post'], url_path='realizar')
+    def marcar_realizada(self, request, pk=None):
+        rutina = self.get_object()
+        user = request.user
+        # Solo dueño del plan o admin
+        if not (user.is_staff or rutina.plan.usuario == user):
+            return ResponseStandard.error(message="No tienes permiso para modificar esta rutina.", status=status.HTTP_403_FORBIDDEN)
+        if rutina.realizada:
+            return ResponseStandard.error(message="La rutina ya fue marcada como realizada.", status=status.HTTP_400_BAD_REQUEST)
+        fecha_realizacion = request.data.get('fecha_realizacion')
+        from datetime import date
+        rutina.realizada = True
+        rutina.fecha_realizacion = fecha_realizacion or date.today()
+        rutina.save()
+        return ResponseStandard.success(
+            data=RoutineSerializer(rutina).data,
+            message="Rutina marcada como realizada.",
+            status=status.HTTP_200_OK
+        ) 

@@ -196,6 +196,35 @@
 }
 ```
 
+### Marcar rutina como realizada
+- **POST** `/api/plans/rutinas/{id}/realizar/`
+- **Permiso:** Autenticado (solo dueño del plan o admin)
+- **Body (opcional):**
+```json
+{
+  "fecha_realizacion": "2024-06-10"  // Si no se envía, se usa la fecha actual
+}
+```
+- **Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Rutina marcada como realizada.",
+  "data": {
+    "id": 10,
+    "dia": 1,
+    "tipo": "entrenamiento",
+    "fecha": "2024-06-03",
+    "realizada": true,
+    "fecha_realizacion": "2024-06-10",
+    ...
+  }
+}
+```
+- **Errores comunes:**
+  - 403: No tienes permiso para modificar esta rutina.
+  - 400: La rutina ya fue marcada como realizada.
+
 ---
 
 ## Conversación

@@ -232,4 +232,34 @@ El perfil de usuario ahora incluye el campo `roles` para facilitar la construcci
    - Coordinar con el equipo frontend para que consuman los endpoints y reporten cualquier ajuste necesario.
 
 2. **Pruebas y feedback:**
-   - Probar el flujo completo en Swagger/Postman y ajustar según feedback de frontend/móvil. 
+   - Probar el flujo completo en Swagger/Postman y ajustar según feedback de frontend/móvil.
+
+## 7. Marcar rutina como realizada
+- **POST** `/api/plans/rutinas/{id}/realizar/`
+- **Permiso:** Autenticado
+- **Body (opcional):**
+```json
+{
+  "fecha_realizacion": "2024-06-10"
+}
+```
+- **Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Rutina marcada como realizada.",
+  "data": {
+    "id": 10,
+    "dia": 1,
+    "tipo": "entrenamiento",
+    "fecha": "2024-06-03",
+    "realizada": true,
+    "fecha_realizacion": "2024-06-10",
+    ...
+  }
+}
+```
+- **Errores comunes:**
+  - 403: No tienes permiso para modificar esta rutina.
+  - 400: La rutina ya fue marcada como realizada.
+  

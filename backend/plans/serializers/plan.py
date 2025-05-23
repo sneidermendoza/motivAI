@@ -30,7 +30,7 @@ class RoutineSerializer(serializers.ModelSerializer):
     ejercicios = ExerciseRoutineSerializer(many=True, read_only=True)
     class Meta:
         model = Routine
-        fields = ['id', 'dia', 'tipo', 'fecha', 'observaciones', 'ejercicios']
+        fields = ['id', 'dia', 'tipo', 'fecha', 'observaciones', 'realizada', 'fecha_realizacion', 'ejercicios']
 
 class PlanEntrenamientoDetailSerializer(serializers.ModelSerializer):
     usuario = serializers.PrimaryKeyRelatedField(read_only=True)

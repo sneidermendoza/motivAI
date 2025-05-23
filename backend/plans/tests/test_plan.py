@@ -57,4 +57,62 @@ class PlanFlowTest(APITestCase):
                 self.assertIn('ejercicio', ej)
                 self.assertIn('nombre', ej['ejercicio'])
                 self.assertIn('imagen_url', ej['ejercicio'])
-                self.assertIn('video_url', ej['ejercicio']) 
+                self.assertIn('video_url', ej['ejercicio'])
+
+    def test_marcar_rutina_realizada_dueno(self):
+        # Crear plan y obtener una rutina
+        data = {'objetivo': 'Ganar músculo', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        plan = response.data['data']['plan']
+        rutina_id = plan['rutinas'][0]['id']
+        url = f'/api/plans/rutinas/{rutina_id}/realizar/'
+        response = self.client.post(url, {}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data['success'])
+        self.assertTrue(response.data['data']['realizada'])
+
+    def test_marcar_rutina_realizada_admin(self):
+        # Crear plan con user1, luego loguear como admin y marcar rutina
+        user2 = User.objects.create_superuser(username='admin', email='admin@example.com', password='Adminpass123')
+        data = {'objetivo': 'Ganar músculo', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        plan = response.data['data']['plan']
+        rutina_id = plan['rutinas'][0]['id']
+        self.client.credentials()  # Logout user1
+        login = self.client.post('/api/token/', {'username': 'admin', 'password': 'Adminpass123'}, format='json')
+        access = login.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access)
+        url = f'/api/plans/rutinas/{rutina_id}/realizar/'
+        response = self.client.post(url, {}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data['success'])
+        self.assertTrue(response.data['data']['realizada'])
+
+    def test_marcar_rutina_realizada_no_autorizado(self):
+        # Crear plan con user1, luego loguear como user2 y tratar de marcar rutina
+        user2 = User.objects.create_user(username='otro', email='otro@example.com', password='Testpass123')
+        data = {'objetivo': 'Ganar músculo', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        plan = response.data['data']['plan']
+        rutina_id = plan['rutinas'][0]['id']
+        self.client.credentials()  # Logout user1
+        login = self.client.post('/api/token/', {'username': 'otro', 'password': 'Testpass123'}, format='json')
+        access = login.data['access']
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + access)
+        url = f'/api/plans/rutinas/{rutina_id}/realizar/'
+        response = self.client.post(url, {}, format='json')
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(response.data['success'])
+
+    def test_no_duplicar_rutina_realizada(self):
+        # Crear plan y marcar rutina dos veces
+        data = {'objetivo': 'Ganar músculo', 'fecha_inicio': '2024-06-03'}
+        response = self.client.post(self.plan_url, data, format='json')
+        plan = response.data['data']['plan']
+        rutina_id = plan['rutinas'][0]['id']
+        url = f'/api/plans/rutinas/{rutina_id}/realizar/'
+        response1 = self.client.post(url, {}, format='json')
+        self.assertEqual(response1.status_code, 200)
+        response2 = self.client.post(url, {}, format='json')
+        self.assertEqual(response2.status_code, 400)
+        self.assertFalse(response2.data['success']) 
