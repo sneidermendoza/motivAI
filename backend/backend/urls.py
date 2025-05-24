@@ -39,9 +39,66 @@ schema_view = get_schema_view(
       - **Notificaciones**: Sistema de notificaciones y alertas
       - **Feedback**: Sistema de feedback y sugerencias
       
+      ## Ejemplos de Uso
+
+      ### 1. Registro y Autenticación
+      ```http
+      POST /api/users/register/
+      {
+        "username": "usuario1",
+        "email": "usuario1@ejemplo.com",
+        "password": "Testpass123",
+        "password2": "Testpass123"
+      }
+      ```
+
+      ### 2. Crear Plan de Entrenamiento
+      ```http
+      POST /api/plans/planentrenamiento/
+      {
+        "objetivo": "Ganar músculo",
+        "fecha_inicio": "2024-06-03",
+        "dias_entrenar": 3,
+        "dias_semana_entrenar": [0,2,4]
+      }
+      ```
+
+      ### 3. Generar Plan con IA
+      ```http
+      POST /api/plans/planentrenamiento/generate/
+      {
+        "age": 28,
+        "gender": "male",
+        "weight": 80,
+        "height": 175,
+        "motivation": "Quiero bajar de peso y sentirme con más energía",
+        "medical_conditions": "Ninguna",
+        "injuries": "Ninguna",
+        "exercise_frequency": "2 veces por semana",
+        "experience_level": "principiante",
+        "specific_goals": "Bajar 5kg en 3 meses",
+        "timeline": "3 meses"
+      }
+      ```
+
+      ### 4. Registrar Progreso
+      ```http
+      POST /api/progress/progreso/
+      {
+        "peso": 70.5,
+        "medidas": {"cintura": 80, "pecho": 95},
+        "imc": 22.5,
+        "energia": "Alta",
+        "observaciones": "Me siento bien",
+        "foto_progreso": "(archivo opcional)"
+      }
+      ```
+
       ## Notas
       - Todos los endpoints requieren autenticación excepto los marcados como públicos
       - Los tokens JWT deben incluirse en el header como `Authorization: Bearer <token>`
+      - Los endpoints de eliminación realizan soft delete (marcan como inactivo)
+      - Los usuarios solo pueden acceder a sus propios recursos, excepto administradores
       """,
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="tu-email@ejemplo.com"),

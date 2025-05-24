@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Conversation, Question, Response, ConversationState
+from .models import Conversation, Question, Response, ConversationState, ConversationFlow
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -84,4 +84,10 @@ class FitnessExtractionOutputSerializer(serializers.Serializer):
     lugar_entrenamiento = serializers.CharField(required=False, allow_null=True)
     otros = serializers.DictField(required=False, allow_null=True)
     missing_fields = serializers.ListField(child=serializers.CharField(), required=False)
-    error = serializers.CharField(required=False) 
+    error = serializers.CharField(required=False)
+
+class ConversationFlowSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConversationFlow
+        fields = ['id', 'name', 'description', 'questions', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at'] 

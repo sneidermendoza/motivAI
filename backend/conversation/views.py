@@ -1,9 +1,9 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
-from .models import Conversation, Question, Response as UserResponse, ConversationState
+from .models import Conversation, Question, Response as UserResponse, ConversationState, ConversationFlow
 from .serializers import (
     ConversationSerializer,
     ConversationCreateSerializer,
@@ -12,7 +12,8 @@ from .serializers import (
     ConversationStateSerializer,
     UserResponseSerializer,
     FitnessExtractionInputSerializer,
-    FitnessExtractionOutputSerializer
+    FitnessExtractionOutputSerializer,
+    ConversationFlowSerializer
 )
 from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
 from .utils import extract_and_update_fitness_profile, transition_conversation_state
@@ -127,4 +128,44 @@ class FitnessExtractionView(APIView):
                 return ResponseStandard.error(message="Faltan campos", data=result, status=status.HTTP_400_BAD_REQUEST)
             return ResponseStandard.success(data=result, message="Datos extraídos correctamente", status=status.HTTP_200_OK)
         else:
-            return ResponseStandard.error(message="Respuesta inválida de la IA", data=output_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+            return ResponseStandard.error(message="Respuesta inválida de la IA", data=output_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ConversationFlowViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    """
+    API endpoint para gestionar flujos de conversación.
+    Solo accesible para administradores.
+    """
+    serializer_class = ConversationFlowSerializer
+    queryset = ConversationFlow.objects.all()
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    swagger_tags = ['Conversación']
+
+    @swagger_auto_schema(
+        operation_description="Lista todos los flujos de conversación (solo admin)",
+        responses={200: ConversationFlowSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Crea un nuevo flujo de conversación (solo admin)",
+        request_body=ConversationFlowSerializer,
+        responses={201: ConversationFlowSerializer()}
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Actualiza un flujo de conversación existente (solo admin)",
+        request_body=ConversationFlowSerializer,
+        responses={200: ConversationFlowSerializer()}
+    )
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Elimina un flujo de conversación (solo admin)",
+        responses={204: "No Content"}
+    )
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs) 

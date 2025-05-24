@@ -110,3 +110,15 @@ class ConversationState(models.Model):
 
     def __str__(self):
         return self.name 
+
+class ConversationFlow(models.Model):
+    """Modelo para configurar el flujo de conversación desde el panel admin."""
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+    questions = models.ManyToManyField(Question, related_name='flows')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name 

@@ -111,6 +111,14 @@ class PlanEntrenamientoViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         Genera un plan personalizado usando Groq (Llama-3) a partir de los datos enviados.
         """
         user_data = request.data
+        # Validación: si no hay datos requeridos, devolver 400
+        required_fields = ['age', 'gender', 'weight', 'height', 'motivation', 'medical_conditions', 'injuries', 'exercise_frequency', 'experience_level', 'specific_goals', 'timeline']
+        if not any(user_data.get(f) for f in required_fields):
+            return ResponseStandard.error(
+                message="Faltan datos requeridos para generar el plan.",
+                data={"missing_fields": required_fields},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         plan_json = generate_training_plan_with_groq(user_data)
         if plan_json and not plan_json.get('error'):
             return ResponseStandard.success(

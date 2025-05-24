@@ -6,6 +6,7 @@ router = DefaultRouter()
 router.register(r'conversations', views.ConversationViewSet, basename='conversation')
 router.register(r'questions', views.QuestionViewSet, basename='question')
 router.register(r'states', views.ConversationStateViewSet, basename='state')
+router.register(r'flows', views.ConversationFlowViewSet, basename='flow')
 
 urlpatterns = [
     path('', include(router.urls)),

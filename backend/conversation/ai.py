@@ -55,6 +55,9 @@ def extract_fitness_data_with_groq(message):
         json_end = content.rfind('}') + 1
         json_str = content[json_start:json_end]
         result = json.loads(json_str)
+        # Mejorar validación: si faltan campos, devolver mensaje claro
+        if result.get('missing_fields'):
+            result['message'] = f"Faltan los siguientes datos: {', '.join(result['missing_fields'])}. Por favor, aclara tu respuesta."
         return result
     except Exception as e:
         return {"error": str(e)} 

@@ -9,6 +9,7 @@
 - [Feedback y Notificaciones](#feedback-y-notificaciones)
 - [Resumen de Permisos por Endpoint](#resumen-de-permisos-por-endpoint)
 - [Progreso del usuario](#progreso-del-usuario)
+- [Flujos de Conversación](#flujos-de-conversación)
 
 ---
 
@@ -296,6 +297,87 @@
   }
 }
 ```
+
+### Flujos de Conversación
+
+#### Listar Flujos
+```http
+GET /api/conversation/flows/
+Authorization: Bearer <token>
+```
+
+Respuesta:
+```json
+{
+    "status": "success",
+    "data": [
+        {
+            "id": 1,
+            "name": "Flujo Inicial",
+            "description": "Flujo para la primera conversación con el usuario",
+            "questions": [
+                {
+                    "id": 1,
+                    "text": "¿Cuál es tu objetivo principal?",
+                    "type": "multiple_choice",
+                    "options": [
+                        "Perder peso",
+                        "Ganar músculo",
+                        "Mejorar resistencia",
+                        "Mantener forma"
+                    ]
+                }
+            ],
+            "active": true,
+            "created_at": "2024-03-20T00:00:00Z",
+            "updated_at": "2024-03-20T00:00:00Z"
+        }
+    ]
+}
+```
+
+#### Crear Flujo
+```http
+POST /api/conversation/flows/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "name": "Nuevo Flujo",
+    "description": "Descripción del flujo",
+    "questions": [
+        {
+            "id": 1,
+            "text": "Pregunta 1",
+            "type": "text"
+        }
+    ],
+    "active": true
+}
+```
+
+#### Actualizar Flujo
+```http
+PUT /api/conversation/flows/{id}/
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "name": "Flujo Actualizado",
+    "active": false
+}
+```
+
+#### Eliminar Flujo
+```http
+DELETE /api/conversation/flows/{id}/
+Authorization: Bearer <token>
+```
+
+Notas:
+- Solo los administradores pueden gestionar los flujos
+- Los flujos activos se utilizan para guiar la conversación
+- Las preguntas pueden ser de tipo texto, número, booleano o opción múltiple
 
 ---
 

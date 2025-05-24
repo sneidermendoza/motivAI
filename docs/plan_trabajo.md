@@ -19,10 +19,10 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Endpoints CRUD de usuario  # Gestión de usuarios
 - [x] Gestión de foto de perfil  # Personalización
 - [ ] Endpoint para cambiar contraseña y recuperación de cuenta  # Seguridad y usabilidad
-- [ ] Endpoint para eliminar cuenta (GDPR)  # Cumplimiento legal
-- [ ] Validación y sanitización de archivos subidos (fotos)  # Seguridad
-- [ ] Limitar tamaño y tipo de archivos permitidos  # Seguridad
-- [ ] Políticas de privacidad y manejo de datos personales  # Legal
+- [x] Endpoint para eliminar cuenta (GDPR)  # Cumplimiento legal
+- [x] Validación y sanitización de archivos subidos (fotos)  # Seguridad
+- [x] Limitar tamaño y tipo de archivos permitidos  # Seguridad
+- [x] Políticas de privacidad y manejo de datos personales  # Legal
 
 ## 3. Sistema Conversacional (Core MVP)
 - [x] Modelo de conversación (estado, contexto, historial)  # Base para interacción IA
@@ -35,10 +35,11 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Documentación y ejemplos claros en Swagger y Markdown  # Facilita integración
 - [x] Endpoint de responder pregunta bien documentado y funcional
 - [x] Flujo conversacional automático al crear plan (conversación ligada a plan)
-- [ ] Sistema de extracción de información de respuestas abiertas  # Necesario para que la IA entienda al usuario (SIGUIENTE)
+- [x] Sistema de extracción de información de respuestas abiertas (conversacional/IA)
+- [ ] Validación y aclaración de respuestas ambiguas o incompletas
+- [x] Panel admin para configurar flujo de conversación
 - [ ] Sistema de validación y aclaración de respuestas  # Mejora la calidad de los datos para la IA
 - [ ] Sistema de fallback para respuestas no entendidas  # UX: manejo de errores conversacionales
-- [ ] Panel admin para configurar flujo de conversación  # Permite ajustar preguntas sin tocar código
 
 ## 4. Planes y Rutinas (Core MVP)
 - [x] Modelo de plan de entrenamiento (un plan activo por usuario)  # Estructura para almacenar el plan generado
@@ -71,7 +72,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Implementar sistema de notificaciones motivacionales (backend + Celery + documentación)
 - [ ] Endpoint para mensajes motivacionales (IA)  # Mantener motivación
 - [ ] Implementar notificaciones push  # Engagement
-- [ ] Configuración de frecuencia por usuario  # Personalización
+- [x] Configuración de frecuencia por usuario  # Personalización
 
 ## 8. Frontend (Core MVP)
 - [ ] Estructura base Next.js + Tailwind  # Base visual
@@ -88,12 +89,12 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 ## 9. Integración IA (Core MVP)
 - [x] Integrar modelo open source local (GPT4All, Llama.cpp, etc.)  # Motor IA (SIGUIENTE tras endpoints de generación de plan)
-- [ ] Sistema de procesamiento de lenguaje natural  # Entender respuestas abiertas
-- [ ] Sistema de extracción de información de respuestas  # Ya cubierto arriba
-- [ ] Sistema de generación de preguntas contextuales  # Conversación más natural
-- [ ] Sistema de validación de respuestas  # Mejorar calidad
-- [ ] Documentar prompts y lógica de interacción  # Mantenibilidad
-- [ ] Sistema de fallback para respuestas no entendidas  # UX
+- [x] Sistema de procesamiento de lenguaje natural  # Entender respuestas abiertas
+- [x] Sistema de extracción de información de respuestas  # Ya cubierto arriba
+- [x] Sistema de generación de preguntas contextuales  # Conversación más natural
+- [x] Sistema de validación de respuestas  # Mejorar calidad
+- [x] Documentar prompts y lógica de interacción  # Mantenibilidad
+- [x] Sistema de fallback para respuestas no entendidas  # UX
 
 ## 10. Documentación y Organización
 - [x] Mantener actualizado el backlog (`backlog/motivAI-backlog.csv`)  # Organización
@@ -103,7 +104,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Documentar endpoints principales y ejemplos de uso  # Facilita integración
 - [ ] Crear guía de contribución  # Comunidad
 - [ ] Separar settings de producción y desarrollo  # Buenas prácticas
-- [ ] Pruebas automáticas (unitarias y de integración)  # Calidad
+- [x] Pruebas automáticas (unitarias y de integración)  # Calidad
 - [ ] CI/CD básico (GitHub Actions)  # Automatización
 - [ ] Logs y monitoreo básico  # Mantenimiento
 
@@ -116,10 +117,10 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 ## 12. Documentación de API (nuevo)
 - [x] Documentar permisos por endpoint
-- [ ] Agregar ejemplos reales en Swagger/OpenAPI
-- [ ] Documentar flujos de uso comunes
-- [ ] Agregar ejemplos de request/response
-- [ ] Documentar códigos de error y manejo
+- [x] Agregar ejemplos reales en Swagger/OpenAPI
+- [x] Documentar flujos de uso comunes
+- [x] Agregar ejemplos de request/response
+- [x] Documentar códigos de error y manejo
 
 ## 13. Mejoras Futuras (no MVP)
 - [ ] Gamificación (logros, medallas)
@@ -140,13 +141,16 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Tests automáticos para progreso y MVP flow
 - [x] Ejemplos claros en Swagger/OpenAPI para progreso
 - [x] Corrección de creación de conversación (user asignado automáticamente)
+- [x] Actualización de documentación Swagger con ejemplos reales
+- [x] Documentación de flujos de uso comunes
+- [x] Documentación de códigos de error y manejo
 
 ## Próximos pasos
-- Agregar ejemplos reales en Swagger/OpenAPI
-- Documentar flujos de uso comunes
 - Integración frontend con el nuevo endpoint conversacional
 - Mejoras en prompts y validación conversacional avanzada
 - Feedback de usuario y ajustes UX
+- Implementación de frontend MVP
+- Pruebas de integración frontend-backend
 
 ---
 
@@ -156,7 +160,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 **¡Actualiza este archivo con cada avance!**
 
-![MVP Progress](https://img.shields.io/badge/MVP%20Progress-60%25-yellow) 
+![MVP Progress](https://img.shields.io/badge/MVP%20Progress-75%25-yellow) 
 
 **Notas del MVP:**
 1. El sistema conversacional es el core del MVP
