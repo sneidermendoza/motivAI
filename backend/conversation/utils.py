@@ -85,4 +85,29 @@ def transition_conversation_state(conversation, current_state, context):
         if next_states:
             next_state = next_states[0]  # Tomar el primer estado siguiente
             conversation.current_state = next_state
-            conversation.save() 
+            conversation.save()
+
+def validar_respuesta_usuario(question, raw_text):
+    """
+    Valida la respuesta del usuario según las reglas de la pregunta.
+    Devuelve (is_valid, mensaje_validacion, fallback).
+    """
+    if not question or not raw_text or not raw_text.strip():
+        return False, "La respuesta está vacía o no se entiende. Por favor, intenta ser más específico.", True
+    # Validación por tipo
+    if question.type == 'numeric':
+        try:
+            valor = float(raw_text.replace(',', '.'))
+            reglas = question.validation_rules or {}
+            if 'min' in reglas and valor < reglas['min']:
+                return False, f"El valor debe ser mayor o igual a {reglas['min']}.", False
+            if 'max' in reglas and valor > reglas['max']:
+                return False, f"El valor debe ser menor o igual a {reglas['max']}.", False
+        except Exception:
+            return False, "Por favor, ingresa un número válido.", False
+    elif question.type == 'multiple_choice':
+        opciones = [o.lower() for o in (question.options or [])]
+        if raw_text.lower() not in opciones:
+            return False, f"Por favor, elige una de las opciones válidas: {', '.join(question.options)}.", False
+    # Si pasa todas las validaciones
+    return True, None, False 

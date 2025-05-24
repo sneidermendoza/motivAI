@@ -18,7 +18,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Autenticación social (Google/Facebook)  # Acceso rápido
 - [x] Endpoints CRUD de usuario  # Gestión de usuarios
 - [x] Gestión de foto de perfil  # Personalización
-- [ ] Endpoint para cambiar contraseña y recuperación de cuenta  # Seguridad y usabilidad
+- [x] Endpoint para cambiar contraseña y recuperación de cuenta  # Seguridad y usabilidad
 - [x] Endpoint para eliminar cuenta (GDPR)  # Cumplimiento legal
 - [x] Validación y sanitización de archivos subidos (fotos)  # Seguridad
 - [x] Limitar tamaño y tipo de archivos permitidos  # Seguridad
@@ -36,10 +36,10 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Endpoint de responder pregunta bien documentado y funcional
 - [x] Flujo conversacional automático al crear plan (conversación ligada a plan)
 - [x] Sistema de extracción de información de respuestas abiertas (conversacional/IA)
-- [ ] Validación y aclaración de respuestas ambiguas o incompletas
+- [x] Validación y aclaración de respuestas ambiguas o incompletas
 - [x] Panel admin para configurar flujo de conversación
-- [ ] Sistema de validación y aclaración de respuestas  # Mejora la calidad de los datos para la IA
-- [ ] Sistema de fallback para respuestas no entendidas  # UX: manejo de errores conversacionales
+- [x] Sistema de validación y aclaración de respuestas  # Mejora la calidad de los datos para la IA
+- [x] Sistema de fallback para respuestas no entendidas  # UX: manejo de errores conversacionales
 
 ## 4. Planes y Rutinas (Core MVP)
 - [x] Modelo de plan de entrenamiento (un plan activo por usuario)  # Estructura para almacenar el plan generado
@@ -53,8 +53,8 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Generación automática de cronograma y ejercicios enriquecidos al crear plan
 - [x] Tests automáticos y documentación de cronograma y ejercicios
 - [x] Endpoint para marcar rutina como realizada  # Seguimiento del usuario
-- [ ] Historial de planes (eliminación lógica)  # Permite ver evolución
-- [ ] Endpoint para modificar/adaptar plan  # Flexibilidad para el usuario
+- [x] Historial de planes (eliminación lógica)  # Permite ver evolución
+- [x] Endpoint para modificar/adaptar plan  # Flexibilidad para el usuario
 
 ## 5. Ejercicios (Core MVP)
 - [x] Modelo de ejercicio (creado por IA o manual)  # Base de datos de ejercicios, necesario para rutinas
@@ -160,7 +160,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 
 **¡Actualiza este archivo con cada avance!**
 
-![MVP Progress](https://img.shields.io/badge/MVP%20Progress-75%25-yellow) 
+![MVP Progress](https://img.shields.io/badge/MVP%20Progress-85%25-green) 
 
 **Notas del MVP:**
 1. El sistema conversacional es el core del MVP

@@ -16,7 +16,7 @@ from .serializers import (
     ConversationFlowSerializer
 )
 from plans.models.plan import UserFitnessProfile, PlanEntrenamiento
-from .utils import extract_and_update_fitness_profile, transition_conversation_state
+from .utils import extract_and_update_fitness_profile, transition_conversation_state, validar_respuesta_usuario
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from backend.utils import ResponseStandard, StandardResponseMixin
@@ -75,11 +75,25 @@ class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         serializer = UserResponseSerializer(data=request.data)
         if not serializer.is_valid():
             return ResponseStandard.error(message="Datos inválidos", data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        question_id = serializer.validated_data.get('question_id')
+        raw_text = serializer.validated_data['raw_text']
+        question = None
+        if question_id:
+            from .models import Question
+            question = Question.objects.filter(id=question_id).first()
+        # Validar respuesta
+        is_valid, mensaje_validacion, is_fallback = validar_respuesta_usuario(question, raw_text)
+        if not is_valid:
+            return ResponseStandard.error(
+                message=mensaje_validacion or "Respuesta no válida.",
+                data={"fallback": is_fallback},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         # Crear la respuesta
         response = UserResponse.objects.create(
             conversation=conversation,
-            raw_text=serializer.validated_data['raw_text'],
-            question_id=serializer.validated_data.get('question_id')
+            raw_text=raw_text,
+            question_id=question_id
         )
         # Procesar la respuesta y actualizar el perfil fitness
         plan = PlanEntrenamiento.objects.filter(usuario=request.user, status='activo').order_by('-fecha_inicio').first()

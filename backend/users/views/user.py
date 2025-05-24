@@ -8,6 +8,8 @@ from backend.utils import ResponseStandard, StandardResponseMixin
 from django.contrib.auth import get_user_model
 from ..serializers.user import UserSerializer, RegisterSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
+from django.contrib.auth.hashers import check_password
+from django.utils.crypto import get_random_string
 
 User = get_user_model()
 
@@ -30,6 +32,39 @@ class UserViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return ResponseStandard.success(data=serializer.data, message="Perfil obtenido correctamente")
+
+    @action(detail=False, methods=['post'], url_path='change-password', permission_classes=[permissions.IsAuthenticated])
+    def change_password(self, request):
+        user = request.user
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        new_password2 = request.data.get('new_password2')
+        if not old_password or not new_password or not new_password2:
+            return ResponseStandard.error(message="Debes enviar old_password, new_password y new_password2.", status=400)
+        if not check_password(old_password, user.password):
+            return ResponseStandard.error(message="La contraseña actual es incorrecta.", status=400)
+        if new_password != new_password2:
+            return ResponseStandard.error(message="Las nuevas contraseñas no coinciden.", status=400)
+        if len(new_password) < 8:
+            return ResponseStandard.error(message="La nueva contraseña debe tener al menos 8 caracteres.", status=400)
+        user.set_password(new_password)
+        user.save()
+        return ResponseStandard.success(message="Contraseña cambiada correctamente.")
+
+    @action(detail=False, methods=['post'], url_path='reset-password', permission_classes=[permissions.AllowAny])
+    def reset_password(self, request):
+        email = request.data.get('email')
+        if not email:
+            return ResponseStandard.error(message="Debes enviar el email.", status=400)
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return ResponseStandard.error(message="No existe un usuario con ese email.", status=404)
+        # Simulación: generar token y devolverlo (en producción se enviaría por correo)
+        token = get_random_string(32)
+        # Aquí se debería guardar el token y asociarlo al usuario para validación posterior
+        # Por ahora solo lo devolvemos para pruebas
+        return ResponseStandard.success(message="Token de recuperación generado (simulado, en producción se enviará por correo).", data={"reset_token": token})
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]

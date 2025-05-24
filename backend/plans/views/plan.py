@@ -134,6 +134,19 @@ class PlanEntrenamientoViewSet(StandardResponseMixin, viewsets.ModelViewSet):
                 status=plan_json.get('status_code', status.HTTP_500_INTERNAL_SERVER_ERROR) if isinstance(plan_json, dict) else status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+    @swagger_auto_schema(
+        operation_description="Lista el historial de planes inactivos (eliminados lógicamente) del usuario autenticado. Los administradores ven todos los planes inactivos. Ejemplo de respuesta: \n\n{\n  'success': true,\n  'message': 'Historial de planes inactivos.',\n  'data': [\n    {\n      'id': 1,\n      'usuario': 2,\n      'fecha_inicio': '2024-06-01',\n      'fecha_fin': null,\n      'objetivo': 'Bajar de peso',\n      'status': 'inactivo',\n      ...\n    }\n  ]\n}",
+        responses={200: PlanEntrenamientoSerializer(many=True)}
+    )
+    @action(detail=False, methods=['get'], url_path='historial', permission_classes=[permissions.IsAuthenticated])
+    def historial(self, request):
+        user = request.user
+        qs = PlanEntrenamiento.objects.filter(status='inactivo')
+        if not user.is_staff:
+            qs = qs.filter(usuario=user)
+        serializer = self.get_serializer(qs, many=True)
+        return ResponseStandard.success(data=serializer.data, message="Historial de planes inactivos.")
+
     def get_queryset(self):
         user = self.request.user
         status_param = self.request.query_params.get('status', 'activo')

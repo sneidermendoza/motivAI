@@ -77,9 +77,39 @@ Consulta estos archivos para ver el estado y responsables de cada tarea.
 - [Backlog de tareas](backlog/motivAI-backlog.csv)
 - [Documentación técnica](docs/arquitectura.md)
 
+## Endpoints útiles
+
+### Cambio de contraseña
+- `POST /api/users/profile/change-password/`
+  - Requiere autenticación.
+  - Body: `{ "old_password": "actual", "new_password": "nueva", "new_password2": "nueva" }`
+  - Cambia la contraseña del usuario.
+
+### Recuperación de contraseña
+- `POST /api/users/profile/reset-password/`
+  - Body: `{ "email": "usuario@correo.com" }`
+  - Simula el envío de un token de recuperación (en producción se enviará por correo electrónico).
+
+### Historial de planes
+- `GET /api/plans/planentrenamiento/historial/`
+  - Requiere autenticación.
+  - Devuelve los planes inactivos (eliminados lógicamente) del usuario. Los administradores ven todos los planes inactivos.
+
+> **Nota:** El endpoint de recuperación de contraseña actualmente solo simula el flujo y devuelve el token en la respuesta. En producción, este token se enviará por correo electrónico al usuario.
+
 ---
 
 > Proyecto personal, código abierto y en constante evolución. ¡Súmate o aporta ideas!
 
 - Modelos principales: Usuario, Plan, Rutina, Ejercicio, Progreso, Notificación, Feedback, PreguntaPlan, RespuestaPlan
 - Gamificación: Logro, UsuarioLogro 
+
+
+implementar test,
+implementar permisos y actualizar la documentacion y el archivo donde estan los datos que vana poblar la bd cuanda la corra desde 0
+actualizar y marcar en el plan de trabjo las tareas hechas
+documentar en swagger los enpoint como se viene haciendo con ejempl;os reales 
+documentar los  enpoint
+si es nececsario agregar algo al readme 
+si se me pasa algo por favor revisa lo que tienes que hacer y lo haces 
+por ultimo corre los test completos a ver si todo sigue igual aun despues de los cambios realizados
