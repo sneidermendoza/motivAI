@@ -68,6 +68,7 @@ Este documento contiene el plan de trabajo detallado, organizado por áreas y ta
 - [x] Modelo de feedback y sugerencias  # Mejorar producto
 - [x] Endpoint para enviar feedback  # Recoger opiniones
 - [x] Panel admin para ver feedback  # Gestión interna (GET solo admin)
+- [x] Implementar sistema de notificaciones motivacionales (backend + Celery + documentación)
 - [ ] Endpoint para mensajes motivacionales (IA)  # Mantener motivación
 - [ ] Implementar notificaciones push  # Engagement
 - [ ] Configuración de frecuencia por usuario  # Personalización

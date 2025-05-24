@@ -52,6 +52,11 @@
 ### IsAdminUser (Plans)
 - Permite acceso solo a administradores
 
+## Notificaciones Motivacionales
+- **Endpoint**: `generar-motivacional`
+- **Permisos**: Solo usuarios autenticados pueden generar notificaciones motivacionales.
+- **Visualización**: Solo el admin puede ver todas las notificaciones, mientras que los usuarios normales solo ven las suyas con status `enviada`.
+
 ## Notas de Seguridad
 1. Todos los endpoints requieren autenticación por defecto (configurado en settings.py)
 2. Los endpoints públicos (AllowAny) son solo para registro y login

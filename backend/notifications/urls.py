@@ -1,5 +1,10 @@
-from django.urls import path
- 
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views.notification import NotificacionViewSet
+
+router = DefaultRouter()
+router.register(r'motivational', NotificacionViewSet, basename='motivational')
+
 urlpatterns = [
-    # Aquí irán los endpoints de notificaciones
+    path('', include(router.urls)),
 ] 
