@@ -5,9 +5,9 @@ Este documento contiene el plan de trabajo detallado y el backlog inicial para e
 ---
 
 ## 1. Configuración Inicial
-- [ ] Crear proyecto Next.js con TypeScript y Tailwind CSS
-- [ ] Configurar estructura base de carpetas (pages, components, hooks, utils, services, etc.)
-- [ ] Configurar ESLint, Prettier y Husky para calidad de código
+- [x] Crear proyecto Next.js con TypeScript y Tailwind CSS
+- [x] Configurar estructura base de carpetas (pages, components, hooks, utils, services, etc.)
+- [x] Configurar ESLint, Prettier y Husky para calidad de código
 - [ ] Configurar variables de entorno para endpoints del backend
 - [ ] Documentar instalación y despliegue local
 

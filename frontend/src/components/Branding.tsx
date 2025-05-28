@@ -41,17 +41,17 @@ export default function Branding() {
       <div className="mb-4">
         <Logo size={100} />
       </div>
-      <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-lg mb-6">
+      <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-gray-900 md:text-white drop-shadow-lg mb-6">
         motiv<span className="text-cyan-300">AI</span>
       </h1>
       <div className="flex-1 flex items-center w-full px-4 md:px-12 lg:px-20">
-        <p className="text-2xl md:text-3xl font-semibold text-white/90 text-center w-full max-w-2xl min-h-[120px] whitespace-pre-line animate-none" style={{fontFamily: 'Montserrat, sans-serif'}}>
+        <p className="text-2xl md:text-3xl font-semibold text-gray-900 md:text-white/90 text-center w-full max-w-2xl min-h-[120px] whitespace-pre-line animate-none" style={{fontFamily: 'Montserrat, sans-serif'}}>
           {done ? (
             <span dangerouslySetInnerHTML={{ __html: highlightKeywords(displayed) }} />
           ) : (
             <>
               {displayed}
-              <span className="inline-block w-2 h-7 align-middle bg-white animate-pulse ml-1" />
+              <span className="inline-block w-2 h-7 align-middle bg-gray-900 md:bg-white animate-pulse ml-1" />
             </>
           )}
         </p>

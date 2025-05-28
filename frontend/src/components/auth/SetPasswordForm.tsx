@@ -6,6 +6,7 @@ import InputField from '../form/InputField';
 import Button from '../form/Button';
 import FormError from '../form/FormError';
 import { useState } from 'react';
+import { authApi } from '@/lib/api';
 
 const schema = z.object({
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
@@ -17,7 +18,7 @@ const schema = z.object({
 
 type SetPasswordData = z.infer<typeof schema>;
 
-export default function SetPasswordForm({ onLogin }: { onLogin?: () => void }) {
+export default function SetPasswordForm({ token, email, onLogin }: { token: string; email: string; onLogin?: () => void }) {
   const [formError, setFormError] = useState('');
   const [success, setSuccess] = useState(false);
   const {
@@ -31,14 +32,16 @@ export default function SetPasswordForm({ onLogin }: { onLogin?: () => void }) {
   const onSubmit = async (data: SetPasswordData) => {
     setFormError('');
     setSuccess(false);
-    // Aquí va la integración con la API
-    // try {
-    //   await setPasswordApi(data);
-    //   setSuccess(true);
-    // } catch (e) {
-    //   setFormError('No se pudo establecer la contraseña');
-    // }
-    setSuccess(true); // Simulación
+    try {
+      await authApi.setPassword({
+        password: data.password,
+        token,
+        email,
+      });
+      setSuccess(true);
+    } catch (e: any) {
+      setFormError(e?.response?.data?.message || 'No se pudo establecer la contraseña');
+    }
   };
 
   return (

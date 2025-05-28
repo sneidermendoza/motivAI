@@ -51,21 +51,6 @@ class UserViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         user.save()
         return ResponseStandard.success(message="Contraseña cambiada correctamente.")
 
-    @action(detail=False, methods=['post'], url_path='reset-password', permission_classes=[permissions.AllowAny])
-    def reset_password(self, request):
-        email = request.data.get('email')
-        if not email:
-            return ResponseStandard.error(message="Debes enviar el email.", status=400)
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return ResponseStandard.error(message="No existe un usuario con ese email.", status=404)
-        # Simulación: generar token y devolverlo (en producción se enviaría por correo)
-        token = get_random_string(32)
-        # Aquí se debería guardar el token y asociarlo al usuario para validación posterior
-        # Por ahora solo lo devolvemos para pruebas
-        return ResponseStandard.success(message="Token de recuperación generado (simulado, en producción se enviará por correo).", data={"reset_token": token})
-
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 

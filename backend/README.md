@@ -52,6 +52,114 @@
   }
   ```
 
+---
+
+## Recuperación de contraseña y emails personalizados
+
+### Flujo de recuperación de contraseña
+
+- **Endpoint:**  
+  `POST /api/users/password-reset/`  
+  Envía un email con un enlace para restablecer la contraseña del usuario.
+
+- **Requisitos:**  
+  - El usuario debe estar registrado y activo.  
+  - El email debe ser válido y único.
+
+- **Funcionamiento:**  
+  - Al solicitar el reset, se genera un token y se dispara una señal.
+  - Un handler personalizado (`users/apps.py`) envía el email usando una plantilla HTML personalizada.
+
+### Personalización del email
+
+- **Plantilla:**  
+  El email se genera usando la plantilla HTML ubicada en:  
+  `users/templates/registration/password_reset_email.html`
+
+- **Ejemplo de contenido de la plantilla:**
+  ```html
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <title>Recupera tu contraseña - motivAI</title>
+      <style>
+        body { background: #f0f6ff; font-family: 'Montserrat', Arial, sans-serif; color: #22223b; margin: 0; padding: 0; }
+        .container { max-width: 420px; margin: 40px auto; background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(37,99,235,0.08); padding: 32px 24px; text-align: center; }
+        .logo { margin-bottom: 16px; }
+        .btn { display: inline-block; margin-top: 24px; padding: 12px 32px; background: linear-gradient(90deg, #2563eb 0%, #22d3ee 100%); color: #fff; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(37,99,235,0.10); }
+        .footer { margin-top: 32px; font-size: 13px; color: #64748b; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="logo">
+          <!-- Logo SVG motivAI -->
+        </div>
+        <h2>¿Olvidaste tu contraseña?</h2>
+        <p>
+          ¡No te preocupes! Haz clic en el botón para restablecer tu contraseña y seguir entrenando con motivAI.
+        </p>
+        <a href="{{ password_reset_url }}" class="btn">Restablecer contraseña</a>
+        <p style="margin-top:24px;">
+          Si no solicitaste este cambio, puedes ignorar este correo.
+        </p>
+        <div class="footer">
+          motivAI &copy; {{ current_year }}<br>
+          <span style="color:#f59e42;">¡Entrena mejor, vive mejor!</span>
+        </div>
+      </div>
+    </body>
+  </html>
+  ```
+
+- **Variables disponibles en la plantilla:**
+  - `password_reset_url`: Enlace único para restablecer la contraseña.
+  - `current_year`: Año actual.
+
+### Handler de señal
+
+- El envío del email se realiza en el handler `password_reset_token_created` en `users/apps.py`:
+  ```python
+  from django.core.mail import EmailMultiAlternatives
+  from django.template.loader import render_to_string
+  from django.conf import settings
+
+  def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+      reset_url = f"http://localhost:3000/auth/reset-password?token={reset_password_token.key}&email={reset_password_token.user.email}"
+      context = {
+          'password_reset_url': reset_url,
+          'current_year': 2025,
+      }
+      subject = "Recupera tu contraseña - motivAI"
+      from_email = settings.DEFAULT_FROM_EMAIL
+      to_email = [reset_password_token.user.email]
+      html_content = render_to_string('registration/password_reset_email.html', context)
+      msg = EmailMultiAlternatives(subject, html_content, from_email, to_email)
+      msg.attach_alternative(html_content, "text/html")
+      msg.send()
+  ```
+
+### Configuración de email
+
+- En `settings.py` debes tener configurado el backend de email, por ejemplo para Gmail:
+  ```python
+  EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+  EMAIL_HOST = 'smtp.gmail.com'
+  EMAIL_PORT = 587
+  EMAIL_HOST_USER = 'tucorreo@gmail.com'
+  EMAIL_HOST_PASSWORD = 'tu_app_password'
+  EMAIL_USE_TLS = True
+  DEFAULT_FROM_EMAIL = 'motivAI <tucorreo@gmail.com>'
+  ```
+
+- Para pruebas, puedes usar el backend de consola:
+  ```python
+  EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+  ```
+
+---
+
 ## 2. Sistema de Roles y Permisos
 - **Modelos:**  
   - `Permission`: código, nombre, descripción.

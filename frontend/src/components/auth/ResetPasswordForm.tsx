@@ -6,6 +6,7 @@ import InputField from '../form/InputField';
 import Button from '../form/Button';
 import FormError from '../form/FormError';
 import { useState } from 'react';
+import { authApi } from '@/lib/api';
 
 const schema = z.object({
   email: z.string().email('Email inválido'),
@@ -16,6 +17,7 @@ type ResetData = z.infer<typeof schema>;
 export default function ResetPasswordForm({ onLogin }: { onLogin?: () => void }) {
   const [formError, setFormError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
   const {
     register,
     handleSubmit,
@@ -27,21 +29,21 @@ export default function ResetPasswordForm({ onLogin }: { onLogin?: () => void })
   const onSubmit = async (data: ResetData) => {
     setFormError('');
     setSuccess(false);
-    // Aquí va la integración con la API
-    // try {
-    //   await resetPasswordApi(data);
-    //   setSuccess(true);
-    // } catch (e) {
-    //   setFormError('No se pudo enviar el correo de recuperación');
-    // }
-    setSuccess(true); // Simulación
+    setSuccessMsg('');
+    try {
+      const res = await authApi.resetPassword({ email: data.email });
+      setSuccess(true);
+      setSuccessMsg(res.message || 'Si el correo existe, recibirás un enlace para restablecer tu contraseña.');
+    } catch (e: any) {
+      setFormError(e?.response?.data?.message || 'No se pudo enviar el correo de recuperación');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
       {success ? (
         <div className="w-full mb-4 text-center text-green-700 bg-green-50 border border-green-200 rounded-lg py-2 px-3 text-sm">
-          Si el correo existe, recibirás un enlace para restablecer tu contraseña.
+          {successMsg}
         </div>
       ) : (
         <>
