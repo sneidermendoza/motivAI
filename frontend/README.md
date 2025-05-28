@@ -110,3 +110,61 @@ Configura las variables de entorno en `.env.local` según los endpoints del back
 ---
 
 **¡Listos para construir el frontend MVP de motivAI! 🚀**
+
+---
+
+## Historial de avances y flujos implementados
+
+### Estructura y configuración
+- Proyecto Next.js + TypeScript + Tailwind + ESLint/Prettier configurado.
+- Estructura modular: separación de features, servicios, hooks, contextos y componentes reutilizables.
+- Branding y estilos base aplicados.
+
+### Autenticación y usuarios
+- Registro y login de usuario con JWT (formulario, validaciones, integración backend).
+- Logout y gestión de sesión (tokens en localStorage y cookies).
+- Contexto global de autenticación.
+- Login social (Google/Facebook) con callback y loader.
+
+### Recuperación de contraseña
+- Formulario para solicitar email de recuperación.
+- Envío de email con link seguro (flujo backend integrado).
+- Página de restablecimiento de contraseña con validación de token y email.
+- Formulario de nueva contraseña con validaciones y feedback.
+- Branding y logo en la página de reset.
+
+### Componentes y utilidades
+- Inputs, botones, mensajes de error, branding reutilizables.
+- Servicios centralizados para consumo de API.
+
+### Documentación y plan de trabajo
+- Documentación de estructura y recomendaciones en README.
+- Plan de trabajo y backlog en docs/plan_trabajo_frontend.md.
+
+---
+
+### Siguiente tarea prioritaria para el MVP
+
+**Implementar la interfaz de chat conversacional y conectar con el backend:**
+- Crear la página principal de chat.
+- Mostrar preguntas y opciones según el flujo recibido del backend.
+- Enviar respuestas y manejar validaciones, aclaraciones y fallback.
+- Visualizar el estado y contexto de la conversación.
+- Este es el core del MVP y la prioridad máxima para avanzar.
+
+---
+
+## Actualización de UI/UX y navegación (Junio 2025)
+
+- Se implementó un **sidebar lateral fijo** en desktop y un **tab bar fijo inferior** en mobile, usando Heroicons para los íconos de navegación.
+- El layout ahora es completamente **responsive**: el contenido nunca queda debajo del menú, gracias a `md:pl-20`.
+- Se creó el componente `UserAvatar` que muestra la foto de perfil (`foto_perfil`) o un ícono genérico si no hay imagen, junto al username.
+- El botón de cerrar sesión ahora es un ícono accesible y nunca se desborda.
+- Se eliminaron los problemas de solapamiento del logo y el contenido con el menú.
+- **Librerías utilizadas:**
+  - `@heroicons/react`: para todos los íconos de navegación y métricas.
+  - `tailwindcss`: para estilos responsivos y utilidades de layout.
+- Componentes nuevos:
+  - `SidebarNav`: navegación lateral/tab bar.
+  - `UserAvatar`: avatar de usuario reutilizable.
+- El dashboard y el layout general ahora siguen las mejores prácticas de UX para apps modernas.

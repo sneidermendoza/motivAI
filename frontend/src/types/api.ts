@@ -4,6 +4,7 @@ export interface User {
   username: string;
   email: string;
   roles: string[];
+  foto_perfil?: string | null;
 }
 
 export interface AuthResponse {

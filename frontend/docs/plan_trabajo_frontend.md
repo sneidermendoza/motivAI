@@ -12,12 +12,12 @@ Este documento contiene el plan de trabajo detallado y el backlog inicial para e
 - [ ] Documentar instalación y despliegue local
 
 ## 2. Autenticación y Usuarios
-- [ ] Implementar registro y login de usuario (JWT)
-- [ ] Implementar login social (Google/Facebook)
-- [ ] Gestión de sesión y almacenamiento seguro del token JWT
+- [x] Implementar registro y login de usuario (JWT)
+- [x] Implementar login social (Google/Facebook)
+- [x] Gestión de sesión y almacenamiento seguro del token JWT
 - [ ] Página de perfil de usuario (ver y editar datos, foto de perfil)
 - [ ] Cambio de contraseña (consumir endpoint backend)
-- [ ] Recuperación de contraseña (flujo simulado, mostrar token)
+- [x] Recuperación de contraseña (flujo real, email y restablecimiento)
 - [ ] Eliminación de cuenta
 - [ ] Manejo de roles y permisos en la UI (admin/usuario)
 
@@ -76,18 +76,31 @@ Este documento contiene el plan de trabajo detallado y el backlog inicial para e
 
 | Prioridad | Área                | Tarea                                                      | Estado  |
 |-----------|---------------------|------------------------------------------------------------|---------|
-| Alta      | Autenticación       | Registro y login JWT                                       | [ ]     |
+| Alta      | Autenticación       | Registro y login JWT                                       | [x]     |
+| Alta      | Autenticación       | Recuperación de contraseña (flujo real)                    | [x]     |
+| Alta      | Autenticación       | Login social (Google/Facebook)                             | [x]     |
 | Alta      | Conversación        | Interfaz de chat y consumo de flujo conversacional         | [ ]     |
 | Alta      | Planes y Rutinas    | Visualización de plan activo y cronograma                  | [ ]     |
 | Alta      | Progreso            | Registro y visualización de progreso                       | [ ]     |
 | Alta      | Notificaciones      | Visualización de notificaciones motivacionales             | [ ]     |
 | Media     | Feedback            | Envío y visualización de feedback                          | [ ]     |
-| Media     | UI/UX               | Branding, responsividad y accesibilidad                    | [ ]     |
+| Media     | UI/UX               | Branding, responsividad y accesibilidad                    | [x]     |
 | Media     | Pruebas             | Pruebas unitarias y de integración                         | [ ]     |
-| Media     | Documentación       | Documentar flujos y ejemplos de endpoints                  | [ ]     |
+| Media     | Documentación       | Documentar flujos y ejemplos de endpoints                  | [x]     |
 | Baja      | Notificaciones Push | Integración PWA y push real                                | [ ]     |
 | Baja      | Gamificación        | Visualización de logros y medallas                         | [ ]     |
 | Baja      | Comunidad           | Panel de comunidad/foro                                    | [ ]     |
+
+---
+
+### Siguiente tarea prioritaria
+
+**Implementar la interfaz de chat conversacional y conectar con el backend:**
+- Crear la página principal de chat.
+- Mostrar preguntas y opciones según el flujo recibido del backend.
+- Enviar respuestas y manejar validaciones, aclaraciones y fallback.
+- Visualizar el estado y contexto de la conversación.
+- Este es el core del MVP y la prioridad máxima para avanzar.
 
 ---
 
@@ -112,3 +125,12 @@ Este documento contiene el plan de trabajo detallado y el backlog inicial para e
 ---
 
 **¡Listos para construir el frontend MVP de motivAI! 🚀**
+
+---
+
+### Actualización de UI/UX (Junio 2025)
+- Sidebar lateral fijo en desktop y tab bar fijo en mobile para navegación principal.
+- Avatar de usuario con foto de perfil o ícono genérico.
+- Layout responsive: el contenido nunca queda debajo del menú.
+- Uso de Heroicons para todos los íconos de navegación y métricas.
+- Objetivo: mejorar la experiencia de usuario, accesibilidad y estética del dashboard y la navegación.
