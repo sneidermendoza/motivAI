@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import SidebarNav from './SidebarNav';
 import UserAvatar from './UserAvatar';
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 
 interface LayoutProps {
   children: ReactNode;
@@ -27,13 +27,13 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           {user && (
             <div className="flex items-center space-x-2">
-              <UserAvatar username={user.username} photoUrl={user.foto_perfil} size={36} />
+              <UserAvatar username={user.username} photoUrl={user.foto_perfil || undefined} size={36} />
               <button
                 onClick={logout}
                 className="p-2 rounded-full hover:bg-indigo-50 text-indigo-600"
                 title="Cerrar sesión"
               >
-                <ArrowRightOnRectangleIcon className="w-6 h-6" />
+                <ArrowLeftOnRectangleIcon className="w-6 h-6" />
               </button>
             </div>
           )}
