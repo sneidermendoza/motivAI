@@ -61,6 +61,10 @@ class ProgresoViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return Progreso.objects.none()
+            
         user = self.request.user
         if user.is_staff:
             return Progreso.objects.all()

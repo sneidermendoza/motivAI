@@ -410,4 +410,129 @@ Los modelos principales (`PlanEntrenamiento`, `Routine`, `Exercise`, `ExerciseRo
   ]
 }
 ```
+
+## Conversaciones (Flujo de Plan)
+
+### Nuevo campo: `current_question`
+
+A partir de ahora, la respuesta de la API de conversación incluye el campo `current_question`, que indica la pregunta actual que el usuario debe responder según el estado del flujo.
+
+Ejemplo de respuesta:
+
+```json
+{
+  "id": 1,
+  "user": 2,
+  "current_state": "motivation",
+  "current_state_info": { ... },
+  "current_question": {
+    "id": 1,
+    "text": "¿Qué te motiva a mejorar tu salud y condición física?",
+    "type": "open",
+    "options": null,
+    "order": 1
+  },
+  ...
+}
+```
+
+- El frontend debe mostrar el texto de `current_question.text` y usar el `id` para enviar la respuesta.
+- En cada transición de estado, el backend actualizará este campo según el flujo.
+
+### Ejemplo de flujo:
+1. Crear conversación → devuelve `current_question` (motivación)
+2. Enviar respuesta con `question_id` y `raw_text`
+3. El backend responde con el siguiente `current_question` según el flujo
   
+## 8. Conversación fluida guiada por IA (2025)
+
+### ¿Cómo funciona ahora el flujo conversacional?
+
+- Al crear un plan, se inicia una conversación donde la IA guía al usuario con preguntas naturales y personalizadas.
+- La IA extrae automáticamente los datos fitness relevantes de cada respuesta del usuario (edad, peso, motivación, objetivo, etc.), manteniendo el contexto de la conversación.
+- Si el usuario responde algo fuera de contexto (por ejemplo, sobre cine o pizza), la IA lo detecta y responde amablemente pidiendo enfocarse en salud, ejercicio o motivación.
+- La IA nunca lista campos faltantes ni usa frases técnicas. Siempre formula preguntas cálidas y personalizadas sobre lo que falta, usando lo que ya sabe del usuario.
+- Cuando la IA tiene todos los datos necesarios, avisa que está lista para generar el plan personalizado.
+
+### Ejemplo de flujo real:
+
+1. **Inicio:**
+   - Backend responde:
+   ```json
+   {
+     "current_question": {
+       "id": 1,
+       "text": "¿Qué te motiva a mejorar tu salud y condición física?",
+       "type": "open"
+     }
+   }
+   ```
+2. **Usuario responde fuera de contexto:**
+   - "Me gusta el cine y la pizza, ¿cuál es tu película favorita?"
+   - Backend responde:
+   ```json
+   {
+     "current_question": {
+       "id": null,
+       "text": "Tu respuesta no está relacionada con salud, ejercicio o motivación. Por favor, cuéntame sobre tus objetivos o motivaciones para mejorar tu salud o condición física.",
+       "type": "open"
+     }
+   }
+   ```
+3. **Usuario responde con motivación y objetivo:**
+   - "Quiero mejorar mi salud y bajar de peso. Me motiva sentirme con más energía y confianza."
+   - Backend responde:
+   ```json
+   {
+     "current_question": {
+       "id": null,
+       "text": "¡Me encanta tu motivación de sentirte más enérgico! Para personalizar tu plan, ¿podrías decirme tu edad y peso actual?",
+       "type": "open"
+     },
+     "collected_data": {
+       "objetivo": "bajar de peso",
+       "motivacion": "sentirme con más energía y confianza"
+     }
+   }
+   ```
+4. **Usuario responde con datos personales:**
+   - "Tengo 30 años, soy hombre, peso 80kg y mido 175cm."
+   - Backend responde:
+   ```json
+   {
+     "current_question": {
+       "id": null,
+       "text": "¡Genial! Ahora que tengo tu edad, peso y altura, ¿con qué frecuencia podrías entrenar y dónde te gustaría hacerlo?",
+       "type": "open"
+     },
+     "collected_data": {
+       "edad": 30,
+       "sexo": "masculino",
+       "peso": 80,
+       "altura": 175
+     }
+   }
+   ```
+
+### Características clave:
+- La IA mantiene el contexto y nunca repite preguntas innecesarias.
+- Si la respuesta es irrelevante, la IA lo detecta y redirige la conversación.
+- El frontend solo debe mostrar el texto de `current_question.text` y enviar la respuesta del usuario.
+- El backend se encarga de toda la lógica de flujo, validación y extracción de datos.
+
+### Ejemplo de finalización:
+Cuando la IA tiene todos los datos:
+```json
+{
+  "current_question": {
+    "id": null,
+    "text": "¡Excelente! Ya tengo toda la información para crear tu plan personalizado. ¿Te gustaría que empecemos a diseñarlo?",
+    "type": "open"
+  },
+  "collected_data": { ... todos los datos ... }
+}
+```
+
+---
+
+**Este flujo conversacional natural y robusto es el core del MVP y está listo para ser consumido por el frontend.**

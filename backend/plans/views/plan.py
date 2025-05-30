@@ -148,6 +148,10 @@ class PlanEntrenamientoViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         return ResponseStandard.success(data=serializer.data, message="Historial de planes inactivos.")
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return PlanEntrenamiento.objects.none()
+            
         user = self.request.user
         status_param = self.request.query_params.get('status', 'activo')
         qs = PlanEntrenamiento.objects.all()
@@ -178,6 +182,10 @@ class UserFitnessProfileViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     swagger_tags = ['Planes']
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return UserFitnessProfile.objects.none()
+            
         user = self.request.user
         if user.is_staff:
             return UserFitnessProfile.objects.all()
@@ -223,6 +231,10 @@ class RoutineViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         )
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return Routine.objects.none()
+            
         status_param = self.request.query_params.get('status', 'activo')
         qs = Routine.objects.all()
         if status_param:
@@ -250,6 +262,10 @@ class ExerciseViewSet(StandardResponseMixin, viewsets.ModelViewSet):
     swagger_tags = ['Ejercicios']
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return Exercise.objects.none()
+            
         status_param = self.request.query_params.get('status', 'activo')
         qs = Exercise.objects.all()
         if status_param:

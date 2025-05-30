@@ -16,6 +16,10 @@ class NotificacionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrAdmin]
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return Notificacion.objects.none()
+            
         user = self.request.user
         if user.is_staff:
             return Notificacion.objects.all()

@@ -2,9 +2,10 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+print("GROQ_MODEL:", os.getenv("GROQ_MODEL"))
 
 def main():
+    
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
     try:

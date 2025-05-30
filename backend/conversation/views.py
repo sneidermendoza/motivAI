@@ -45,10 +45,19 @@ class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         responses={201: ConversationSerializer()}
     )
     def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
+        response = super().create(request, *args, **kwargs)
+        # Obtener la instancia recién creada
+        instance = self.get_queryset().order_by('-created_at').first()
+        data = ConversationSerializer(instance).data
+        return ResponseStandard.success(
+            data=data,
+            message="Conversación creada correctamente.",
+            status=status.HTTP_201_CREATED
+        )
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # Forzar el estado inicial a 'motivation' para que el flujo arranque correctamente
+        serializer.save(user=self.request.user, current_state='motivation')
 
     @swagger_auto_schema(
         operation_description="Reinicia una conversación existente",
@@ -99,9 +108,71 @@ class ConversationViewSet(StandardResponseMixin, viewsets.ModelViewSet):
         plan = PlanEntrenamiento.objects.filter(usuario=request.user, status='activo').order_by('-fecha_inicio').first()
         if plan:
             extract_and_update_fitness_profile(request.user, plan, response)
-        response.extracted_data = {'raw_text': response.raw_text}
-        response.save()
+        # --- ACTUALIZAR CONTEXTO DE LA CONVERSACIÓN USANDO IA ---
+        from conversation.models import ConversationState
+        state = ConversationState.objects.get(name=conversation.current_state)
+        required_data = state.required_data
+        context = conversation.context or {}
+        collected_data = context.get('collected_data', {})
+        # Usar la IA para extraer todos los campos posibles de la respuesta
+        ia_extracted = extract_fitness_data_with_groq(raw_text)
+        print('[DEBUG] IA EXTRACTED:', ia_extracted)  # Log temporal para depuración
+        # Detectar si la respuesta es irrelevante (todos los campos relevantes son null y el mensaje es el esperado)
+        fuera_contexto_msg = "tu respuesta no está relacionada con salud, ejercicio o motivación. por favor, cuéntame sobre tus objetivos o motivaciones para mejorar tu salud o condición física."
+        campos_relevantes = [
+            'edad', 'sexo', 'peso', 'altura', 'objetivo', 'motivacion', 'nivel_actividad',
+            'restricciones', 'frecuencia_ejercicio', 'nivel_experiencia', 'dias_entrenar', 'lugar_entrenamiento'
+        ]
+        todos_null = all(ia_extracted.get(c) in [None, '', [], {}] for c in campos_relevantes)
+        if todos_null and ia_extracted.get('message', '').strip().lower() == fuera_contexto_msg:
+            context['ia_message'] = ia_extracted['message']
+            conversation.context = context
+            conversation.save()
+            return ResponseStandard.success(
+                data=ConversationSerializer(conversation).data,
+                message=ia_extracted['message'],
+                status=status.HTTP_200_OK
+            )
+        # Guardar el mensaje conversacional de la IA en el contexto
+        if 'message' in ia_extracted and ia_extracted['message']:
+            context['ia_message'] = ia_extracted['message']
+        else:
+            context.pop('ia_message', None)  # Limpiar si no hay mensaje nuevo
+        # Mapeo de campos IA (español) a campos requeridos (inglés)
+        field_map = {
+            'motivacion': 'motivation',
+            'edad': 'age',
+            'sexo': 'gender',
+            'peso': 'weight',
+            'altura': 'height',
+            'objetivo': 'specific_goals',
+            'frecuencia_ejercicio': 'exercise_frequency',
+            'nivel_experiencia': 'experience_level',
+            'restricciones': 'medical_conditions',
+            'dias_entrenar': 'days_per_week',
+            'lugar_entrenamiento': 'training_location',
+            'timeline': 'timeline',
+            'medical_conditions': 'medical_conditions',
+            'injuries': 'injuries',
+        }
+        # Mapear los campos extraídos a los requeridos para este estado
+        for field in required_data:
+            # Buscar el valor en el campo requerido o su equivalente en español
+            value = None
+            if field in ia_extracted and ia_extracted[field] is not None:
+                value = ia_extracted[field]
+            else:
+                # Buscar en el mapeo inverso
+                for k, v in field_map.items():
+                    if v == field and k in ia_extracted and ia_extracted[k] is not None:
+                        value = ia_extracted[k]
+                        break
+            if value is not None:
+                collected_data[field] = value
+        context['collected_data'] = collected_data
+        conversation.context = context
         conversation.save()
+        # --- FIN ACTUALIZAR CONTEXTO ---
         # Llamar al helper de transición de estado
         transition_conversation_state(conversation, conversation.current_state, conversation.context)
         return ResponseStandard.success(

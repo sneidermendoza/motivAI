@@ -57,6 +57,10 @@ class FeedbackViewSet(viewsets.ModelViewSet):
         serializer.save(usuario=user)
 
     def get_queryset(self):
+        # Si es una vista de Swagger, devolver queryset vacío
+        if getattr(self, 'swagger_fake_view', False):
+            return Feedback.objects.none()
+            
         user = self.request.user
         if user.is_staff:
             return Feedback.objects.all()

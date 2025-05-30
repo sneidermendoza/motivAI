@@ -70,17 +70,8 @@ def transition_conversation_state(conversation, current_state, context):
     collected_data = context.get('collected_data', {})
     missing_data = [field for field in required_data if field not in collected_data]
 
-    # Si faltan datos, se puede decidir si avanzar o quedarse en el mismo estado
-    # En este caso, avanzamos si hay al menos un dato recolectado
-    if missing_data and len(collected_data) > 0:
-        # Avanzar al siguiente estado si hay datos recolectados
-        next_states = state.next_states
-        if next_states:
-            next_state = next_states[0]  # Tomar el primer estado siguiente
-            conversation.current_state = next_state
-            conversation.save()
-    elif not missing_data:
-        # Si no faltan datos, avanzar al siguiente estado
+    # Solo avanzar al siguiente estado si se han recolectado todos los datos requeridos
+    if not missing_data:
         next_states = state.next_states
         if next_states:
             next_state = next_states[0]  # Tomar el primer estado siguiente

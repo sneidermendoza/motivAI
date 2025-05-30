@@ -23,12 +23,13 @@ class ConversationStateSerializer(serializers.ModelSerializer):
 class ConversationSerializer(serializers.ModelSerializer):
     responses = ResponseSerializer(many=True, read_only=True)
     current_state_info = serializers.SerializerMethodField()
+    current_question = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
         fields = ['id', 'user', 'created_at', 'updated_at', 'is_active', 
-                 'context', 'current_state', 'responses', 'current_state_info']
-        read_only_fields = ['id', 'created_at', 'updated_at', 'responses', 'current_state_info']
+                 'context', 'current_state', 'responses', 'current_state_info', 'current_question']
+        read_only_fields = ['id', 'created_at', 'updated_at', 'responses', 'current_state_info', 'current_question']
 
     def get_current_state_info(self, obj):
         try:
@@ -36,6 +37,38 @@ class ConversationSerializer(serializers.ModelSerializer):
             return ConversationStateSerializer(state).data
         except ConversationState.DoesNotExist:
             return None
+
+    def get_current_question(self, obj):
+        # Si la IA dejó un mensaje personalizado en el contexto, úsalo como pregunta conversacional
+        context = obj.context or {}
+        ia_message = None
+        if 'ia_message' in context:
+            ia_message = context['ia_message']
+        elif 'collected_data' in context and 'ia_message' in context['collected_data']:
+            ia_message = context['collected_data']['ia_message']
+        if ia_message:
+            return {'id': None, 'text': ia_message}
+        # Mapeo de estado a orden de pregunta (fallback tradicional)
+        state_to_order = {
+            'initial': 1,
+            'motivation': 1,
+            'personal_info': 2,
+            'goals': 6,
+            'experience': 8,
+            'medical': 10,
+            'final': None
+        }
+        state_name = obj.current_state
+        order = state_to_order.get(state_name)
+        question = None
+        if order:
+            question = Question.objects.filter(order=order, is_active=True).first()
+        # Fallback: si no hay pregunta para el estado, busca la de order=1 (motivación)
+        if not question:
+            question = Question.objects.filter(order=1, is_active=True).first()
+        if question:
+            return QuestionSerializer(question).data
+        return None
 
 class ConversationCreateSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)

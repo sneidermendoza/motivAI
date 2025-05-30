@@ -8,10 +8,11 @@ import re
 load_dotenv()
 
 GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama3-8b-8192')
+GROQ_MODEL = os.getenv('GROQ_MODEL', 'llama3-70b-8192')
 GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
 print("[DEBUG] GROQ_API_KEY:", GROQ_API_KEY)  # Log temporal para depuración
+print("[DEBUG] GROQ_MODEL:", repr(GROQ_MODEL))  # Log temporal para depuración
 
 def build_training_plan_prompt(user_data):
     prompt = f"""
